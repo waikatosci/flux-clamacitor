@@ -151,18 +151,23 @@ from a major river system. *Environmental Science & Technology*.
 
 **Code:**
 
-Hartland et al. (2025). *Flux Clamacitor v1.0.0 — C. fluminea CaCO₃ mass balance and
-population scaling model (Waikato River, NZ)*. Zenodo.
-https://doi.org/10.5281/zenodo.18854151
-```
+Hartland, A.; Melchior, M.; Hamilton, D.; Lehto, N.J.; Mullarney, J.; Sandwell, D.;
+Robb, L.; Jabbari, A.; Lang, J.; Clague, J.; Özkundakci, D.; Hofstra, D. (2025).
+*Flux Clamacitor v1.0.0 — C. fluminea CaCO₃ mass balance and population scaling
+model (Waikato River, NZ)*. Zenodo. https://doi.org/10.5281/zenodo.18854151
 
 ---
 
 ## Funding and Permissions
 
-This work was funded by the New Zealand Ministry of Business, Innovation and Employment (MBIE) Endeavour programme grants to Lincoln Agritech Ltd (LVLX2302) and Earth Sciences New Zealand (NIW2475), with in-kind and cash contributions from Waikato Regional Council. All sampling and analytical procedures complied with MPI biosecurity protocols for containing the *C. fluminea* invasion (MPI permit P0134).
+This work was funded by the New Zealand Ministry of Business, Innovation and Employment
+(MBIE) Endeavour programme grants to Lincoln Agritech Ltd (LVLX2302) and Earth Sciences
+New Zealand (NIW2475), with in-kind and cash contributions from Waikato Regional Council.
+All sampling and analytical procedures complied with MPI biosecurity protocols for
+containing the *C. fluminea* invasion (MPI permit P0134).
 
-We acknowledge Ngāti Kōroki Kahukura, kaitiaki of Maunga Maungatautari and Lake Karāpiro, and Waikato-Tainui iwi.
+We acknowledge Ngāti Kōroki Kahukura, kaitiaki of Maunga Maungatautari and Lake Karāpiro,
+and Waikato-Tainui iwi.
 
 ---
 
