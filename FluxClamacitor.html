@@ -1482,6 +1482,7 @@ function toggleMethod(key) {
   var btn = document.getElementById('btn_' + key);
   var isRes = key.endsWith('_R');
   btn.className = 'method-btn' + (activeMethods[key] ? (isRes ? ' active-green' : ' active') : '');
+  runModel();
 }
 
 function addSiteRow() {
@@ -1569,9 +1570,10 @@ function runModel() {
   var allDensities = activeKeys.map(function(k) { return results[k].D; });
   var model_mean = allDensities.length > 0
     ? allDensities.reduce(function(a,b){return a+b;}, 0) / allDensities.length : 0;
+  // Sample SD (n-1) — population SD is inappropriate for 2-4 method estimates
   var model_std = allDensities.length > 1
     ? Math.sqrt(allDensities.map(function(d){return Math.pow(d-model_mean,2);})
-        .reduce(function(a,b){return a+b;},0) / allDensities.length) : 0;
+        .reduce(function(a,b){return a+b;},0) / (allDensities.length - 1)) : null;
   var avgCaCO3 = activeKeys.length > 0
     ? activeKeys.map(function(k){return results[k].m_caco3;})
         .reduce(function(a,b){return a+b;},0) / activeKeys.length : 0;
@@ -1640,14 +1642,14 @@ function runModel() {
     surveyData.forEach(function(site) {
       var diff = site.val - model_mean;
       var ratio = model_mean > 0 ? (site.val / model_mean).toFixed(2) : '—';
-      var within = Math.abs(diff) <= model_std;
+      var within = (model_std !== null) ? Math.abs(diff) <= model_std : null;
       surveyComp.innerHTML +=
         '<tr>' +
         '<td style="color:var(--text)">' + site.name + '</td>' +
         '<td class="val-survey">' + fmtNum(site.val, 1) + '</td>' +
         '<td class="' + (diff > 0 ? 'val-pos' : 'val-neg') + '">' + (diff > 0 ? '+' : '') + fmtNum(diff, 1) + '</td>' +
         '<td class="val-neutral">' + ratio + '×</td>' +
-        '<td style="color:' + (within ? 'var(--accent2)' : 'var(--warn)') + ';font-size:0.7rem;letter-spacing:1px">' + (within ? '✓ YES' : '✗ NO') + '</td>' +
+        '<td style="color:' + (within === null ? 'var(--text-dim)' : within ? 'var(--accent2)' : 'var(--warn)') + ';font-size:0.7rem;letter-spacing:1px">' + (within === null ? '— n/a' : within ? '✓ YES' : '✗ NO') + '</td>' +
         '</tr>';
     });
   }
@@ -1662,6 +1664,13 @@ function runModel() {
 // ═══════════════════════════════════════════════════════
 //  CHARTS
 // ═══════════════════════════════════════════════════════
+
+var COLOR_MAP = {
+  Ca_S:  { bg: 'rgba(255,157,0,0.7)',  border: '#ff9d00' },
+  Alk_S: { bg: 'rgba(157,0,255,0.7)',  border: '#9d00ff' },
+  Ca_R:  { bg: 'rgba(0,200,255,0.7)',  border: '#00c8ff' },
+  Alk_R: { bg: 'rgba(0,255,157,0.7)', border: '#00ff9d' }
+};
 var CHART_TICK  = { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } };
 var CHART_GRID  = { color: 'rgba(14,74,110,0.25)' };
 var CHART_LEGEND= { labels: { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } } };
@@ -1676,11 +1685,11 @@ function axisTitle(text) {
 
 function drawFluxChart(results) {
   destroyChart('fluxChart');
-  var keys    = Object.keys(results);
+  var keys    = Object.keys(results).filter(function(k){ return results[k].active; });
   var labels  = keys.map(function(k){ return results[k].label; });
   var vals    = keys.map(function(k){ return results[k].m_caco3; });
-  var colors  = ['rgba(255,157,0,0.7)','rgba(157,0,255,0.7)','rgba(0,200,255,0.7)','rgba(0,255,157,0.7)'];
-  var borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d'];
+  var colors  = keys.map(function(k){ return COLOR_MAP[k].bg; });
+  var borders = keys.map(function(k){ return COLOR_MAP[k].border; });
   charts['fluxChart'] = new Chart(document.getElementById('fluxChart'), {
     type: 'bar',
     data: { labels: labels, datasets: [{ label: 'CaCO₃ Flux (t/day)', data: vals,
@@ -1697,15 +1706,19 @@ function drawFluxChart(results) {
 
 function drawDensityChart(results, model_mean, model_std, surveyData, survey_mean, survey_std) {
   destroyChart('densityChart');
-  var keys      = Object.keys(results);
+  var keys      = Object.keys(results).filter(function(k){ return results[k].active; });
   var labels    = keys.map(function(k){ return results[k].label; });
-  labels.push('Combined Model');
+  labels.push('Combined');
   labels.push('Survey Mean');
   var densities = keys.map(function(k){ return results[k].D; });
   densities.push(model_mean);
   densities.push(survey_mean);
-  var colors  = ['rgba(255,157,0,0.6)','rgba(157,0,255,0.6)','rgba(0,200,255,0.6)','rgba(0,255,157,0.6)','rgba(0,200,255,0.9)','rgba(255,107,53,0.9)'];
-  var borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d','#00c8ff','#ff6b35'];
+  var colors  = keys.map(function(k){ return COLOR_MAP[k].bg; });
+  colors.push('rgba(0,200,255,0.9)');
+  colors.push('rgba(255,107,53,0.9)');
+  var borders = keys.map(function(k){ return COLOR_MAP[k].border; });
+  borders.push('#00c8ff');
+  borders.push('#ff6b35');
 
   // Survey lines plugin
   var surveyLinesPlugin = {
@@ -1753,11 +1766,11 @@ function drawDensityChart(results, model_mean, model_std, surveyData, survey_mea
 
 function drawBiovolChart(results) {
   destroyChart('biovolChart');
-  var keys    = Object.keys(results);
+  var keys    = Object.keys(results).filter(function(k){ return results[k].active; });
   var labels  = keys.map(function(k){ return results[k].label; });
   var vals    = keys.map(function(k){ return results[k].V_bio; });
-  var colors  = ['rgba(255,157,0,0.6)','rgba(157,0,255,0.6)','rgba(0,200,255,0.6)','rgba(0,255,157,0.6)'];
-  var borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d'];
+  var colors  = keys.map(function(k){ return COLOR_MAP[k].bg; });
+  var borders = keys.map(function(k){ return COLOR_MAP[k].border; });
   charts['biovolChart'] = new Chart(document.getElementById('biovolChart'), {
     type: 'bar',
     data: { labels: labels, datasets: [{ label: 'V_bio (m³/day)', data: vals,
