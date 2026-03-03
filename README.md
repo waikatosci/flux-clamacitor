@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18854151.svg)](https://doi.org/10.5281/zenodo.18854151)
+
 # Flux Clamacitor — *Corbicula fluminea* CaCO₃ Mass Balance Model
 
 **Companion code and interactive tool for:**
@@ -138,15 +140,20 @@ All input data files are provided in the supplementary material of the companion
 
 ---
 
-## Citation
+### Citation
 
 If you use this code or the Flux Clamacitor tool, please cite:
 
-```
 Hartland, A., Melchior, M., Hamilton, D., Lehto, N.J., Mullarney, J., Sandwell, D.,
 Robb, L., Jabbari, A., Lang, J., Clague, J., Özkundakci, D., and Hofstra, D. (in review).
 Massive calcium drawdown by invasive bivalves undermines arsenic removal in water supply
-from a major river system. Environmental Science & Technology.
+from a major river system. *Environmental Science & Technology*.
+
+**Code:**
+
+Hartland et al. (2025). *Flux Clamacitor v1.0.0 — C. fluminea CaCO₃ mass balance and
+population scaling model (Waikato River, NZ)*. Zenodo.
+https://doi.org/10.5281/zenodo.18854151
 ```
 
 ---
