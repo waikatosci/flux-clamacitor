@@ -32,7 +32,6 @@ The **Flux Clamacitor** (`FluxClamacitor.html`) is a self-contained browser-base
     ├── Full_data_for_Corbicula_Calcs_Landscape_Updated_16_1_26.xlsx
     ├── processed_corbicula_biovolumes.xlsx
     ├── Monthly_Water_Quality_Narrows_Summary.csv
-    ├── depth_residence_cleaned_with_tau.csv
     └── Revised_Corbicula_Mass_Balance.csv
 ```
 
