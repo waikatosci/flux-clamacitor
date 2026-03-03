@@ -1061,22 +1061,22 @@
 
         <div class="section-sep">Active Flux Methods</div>
         <div class="method-toggle">
-          <button class="method-btn active" id="btn_Ca_S" onclick="toggleMethod('Ca_S')">Ca Spatial</button>
-          <button class="method-btn active" id="btn_Alk_S" onclick="toggleMethod('Alk_S')">Alk Spatial</button>
-          <button class="method-btn active-green" id="btn_Ca_R" onclick="toggleMethod('Ca_R')">Ca Res.</button>
-          <button class="method-btn active-green" id="btn_Alk_R" onclick="toggleMethod('Alk_R')">Alk Res.</button>
+          <button class="method-btn active" id="btn_Ca_S" onclick="toggleMethod('Ca_S')">Ca Long.</button>
+          <button class="method-btn active" id="btn_Alk_S" onclick="toggleMethod('Alk_S')">Alk Long.</button>
+          <button class="method-btn active-green" id="btn_Ca_R" onclick="toggleMethod('Ca_R')">Ca Vert.</button>
+          <button class="method-btn active-green" id="btn_Alk_R" onclick="toggleMethod('Alk_R')">Alk Vert.</button>
         </div>
 
-        <div class="section-sep">Spatial Method (Longitudinal)</div>
+        <div class="section-sep">Longitudinal Flux Method</div>
 
         <div class="flux-inputs-grid">
           <div class="param-group">
             <label class="param-label">Ca Upstream <span class="unit">(mg/L)</span></label>
-            <input class="param-input" type="number" id="Ca_up" value="4.5" step="0.01">
+            <input class="param-input" type="number" id="Ca_up" value="6.2" step="0.01">
           </div>
           <div class="param-group">
             <label class="param-label">Ca Downstream <span class="unit">(mg/L)</span></label>
-            <input class="param-input" type="number" id="Ca_down" value="4.2" step="0.01">
+            <input class="param-input" type="number" id="Ca_down" value="5.3" step="0.01">
           </div>
           <div class="param-group">
             <label class="param-label">Alk Upstream <span class="unit">(mg/L)</span></label>
@@ -1088,11 +1088,11 @@
           </div>
           <div class="param-group">
             <label class="param-label">Q Upstream <span class="unit">(m³/s)</span></label>
-            <input class="param-input" type="number" id="Q_up" value="85" step="1">
+            <input class="param-input" type="number" id="Q_up" value="50" step="1">
           </div>
           <div class="param-group">
             <label class="param-label">Q Downstream <span class="unit">(m³/s)</span></label>
-            <input class="param-input" type="number" id="Q_down" value="90" step="1">
+            <input class="param-input" type="number" id="Q_down" value="50" step="1">
           </div>
         </div>
 
@@ -1101,15 +1101,15 @@
         <div class="flux-inputs-grid">
           <div class="param-group">
             <label class="param-label">Ca Top (2m) <span class="unit">(mg/L)</span></label>
-            <input class="param-input" type="number" id="Ca_top" value="4.6" step="0.01">
+            <input class="param-input" type="number" id="Ca_top" value="6.0" step="0.01">
           </div>
           <div class="param-group">
             <label class="param-label">Ca Bottom <span class="unit">(mg/L)</span></label>
-            <input class="param-input" type="number" id="Ca_bot" value="4.1" step="0.01">
+            <input class="param-input" type="number" id="Ca_bot" value="5.2" step="0.01">
           </div>
           <div class="param-group">
             <label class="param-label">Alk Top <span class="unit">(mg/L)</span></label>
-            <input class="param-input" type="number" id="Alk_top" value="42.0" step="0.1">
+            <input class="param-input" type="number" id="Alk_top" value="40.0" step="0.1">
           </div>
           <div class="param-group">
             <label class="param-label">Alk Bottom <span class="unit">(mg/L)</span></label>
@@ -1371,7 +1371,7 @@
         </div>
         <div class="about-text" style="margin-top:8px">
           * Corresponding author:
-          <a href="mailto:adam.hartland@lincolnagritech.co.nz">adam.hartland@lincolnagritech.co.nz</a>
+          <a href="/cdn-cgi/l/email-protection#ddbcb9bcb0f3b5bcafa9b1bcb3b99db1b4b3beb2b1b3bcbaafb4a9b8beb5f3beb2f3b3a7"><span class="__cf_email__" data-cfemail="e68782878bc88e8794928a878882a68a8f8885898a888781948f9283858ec88589c8889c">[email&#160;protected]</span></a>
         </div>
       </div>
 
@@ -1405,6 +1405,16 @@
           systematically undersaturated with respect to calcite (SI<sub>cc</sub> &lt; 0), ruling out
           abiotic Ca removal.
         </div>
+
+        <div class="about-heading" style="margin-top:14px">AI Assistance Disclosure</div>
+        <div class="about-text">
+          This GUI was developed with the assistance of <strong>Claude Sonnet 4.6</strong> (Anthropic),
+          using the underlying Python codebase and mass balance framework as source logic. All scientific
+          content, equations, parameter values, and analytical methodology were authored by the research
+          team and verified against the companion paper. AI assistance was limited to GUI development and
+          did not contribute to data analysis, interpretation, or manuscript preparation.
+          Disclosed in accordance with ACS / <em>ES&amp;T</em> AI use policy.
+        </div>
       </div>
 
     </div>
@@ -1422,68 +1432,65 @@ const MOLAR_MASS_CACO3 = 100.09;
 const EQ_WEIGHT_ALK    = 50.043;
 const SEC_PER_DAY      = 86400;
 
-// Active method flags
 const activeMethods = { Ca_S: true, Alk_S: true, Ca_R: true, Alk_R: true };
-
-// Chart instances
 let charts = {};
 
 // ═══════════════════════════════════════════════════════
 //  UI HELPERS
 // ═══════════════════════════════════════════════════════
-function fmtSI(v, decimals=2) {
+function fmtSI(v, decimals) {
+  decimals = decimals === undefined ? 2 : decimals;
   if (v === null || isNaN(v)) return '—';
-  const abs = Math.abs(v);
+  var abs = Math.abs(v);
   if (abs >= 1e9)  return (v/1e9).toFixed(decimals) + '×10⁹';
   if (abs >= 1e6)  return (v/1e6).toFixed(decimals) + '×10⁶';
   if (abs >= 1e3)  return (v/1e3).toFixed(decimals) + '×10³';
   return v.toFixed(decimals);
 }
 
-function fmtNum(v, decimals=1) {
+function fmtNum(v, decimals) {
+  decimals = decimals === undefined ? 1 : decimals;
   if (v === null || isNaN(v)) return '—';
   return v.toLocaleString('en-NZ', {maximumFractionDigits: decimals});
 }
 
 function syncInput(id, val) {
-  const num = parseFloat(val);
+  var num = parseFloat(val);
   document.getElementById(id).value = num;
-  // Update display label
-  const dv = document.getElementById('rv_' + id);
+  var dv = document.getElementById('rv_' + id);
   if (dv) {
     if (num >= 1e6) dv.textContent = (num/1e6).toFixed(2) + '×10⁶';
     else if (num >= 1e3) dv.textContent = (num/1e3).toFixed(2) + '×10³';
-    else dv.textContent = num.toFixed(4).replace(/\.?0+$/,'');
+    else dv.textContent = parseFloat(num.toFixed(4)).toString();
   }
 }
 
 function syncRange(id, val) {
-  const num = parseFloat(val);
-  const r = document.getElementById('r_' + id);
+  var num = parseFloat(val);
+  var r = document.getElementById('r_' + id);
   if (r) r.value = num;
-  const dv = document.getElementById('rv_' + id);
+  var dv = document.getElementById('rv_' + id);
   if (dv) {
     if (num >= 1e6) dv.textContent = (num/1e6).toFixed(2) + '×10⁶';
     else if (num >= 1e3) dv.textContent = (num/1e3).toFixed(2) + '×10³';
-    else dv.textContent = num.toFixed(4).replace(/\.?0+$/,'');
+    else dv.textContent = parseFloat(num.toFixed(4)).toString();
   }
 }
 
 function toggleMethod(key) {
   activeMethods[key] = !activeMethods[key];
-  const btn = document.getElementById('btn_' + key);
-  const isRes = key.endsWith('_R');
+  var btn = document.getElementById('btn_' + key);
+  var isRes = key.endsWith('_R');
   btn.className = 'method-btn' + (activeMethods[key] ? (isRes ? ' active-green' : ' active') : '');
 }
 
 function addSiteRow() {
-  const tbody = document.getElementById('surveyBody');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td><input class="site-name-input" type="text" value="New Site"></td>
-    <td><input type="number" value="0" step="0.1"></td>
-    <td><button class="del-btn" onclick="deleteSiteRow(this)">×</button></td>
-  `;
+  var tbody = document.getElementById('surveyBody');
+  var tr = document.createElement('tr');
+  tr.innerHTML =
+    '<td><input class="site-name-input" type="text" value="New Site"></td>' +
+    '<td><input type="number" value="0" step="0.1"></td>' +
+    '<td><button class="del-btn" onclick="deleteSiteRow(this)">×</button></td>';
   tbody.appendChild(tr);
 }
 
@@ -1492,13 +1499,13 @@ function deleteSiteRow(btn) {
 }
 
 function getSurveyData() {
-  const rows = document.querySelectorAll('#surveyBody tr');
-  const data = [];
-  rows.forEach(row => {
-    const inputs = row.querySelectorAll('input');
-    const name = inputs[0].value.trim() || 'Site';
-    const val = parseFloat(inputs[1].value);
-    if (!isNaN(val)) data.push({ name, val });
+  var rows = document.querySelectorAll('#surveyBody tr');
+  var data = [];
+  rows.forEach(function(row) {
+    var inputs = row.querySelectorAll('input');
+    var name = inputs[0].value.trim() || 'Site';
+    var val = parseFloat(inputs[1].value);
+    if (!isNaN(val)) data.push({ name: name, val: val });
   });
   return data;
 }
@@ -1507,351 +1514,300 @@ function getSurveyData() {
 //  CORE MODEL
 // ═══════════════════════════════════════════════════════
 function runModel() {
-  // Read parameters
-  const V_LAKE           = parseFloat(document.getElementById('V_LAKE').value);
-  const AREA             = parseFloat(document.getElementById('AREA').value);
-  const DV_DT_CM3        = parseFloat(document.getElementById('DV_DT_CM3').value);
-  const TOTAL_SHELL_RATIO= parseFloat(document.getElementById('TOTAL_SHELL_RATIO').value);
-  const BULK_DENSITY     = parseFloat(document.getElementById('BULK_DENSITY').value);
+  var V_LAKE            = parseFloat(document.getElementById('V_LAKE').value);
+  var AREA              = parseFloat(document.getElementById('AREA').value);
+  var DV_DT_CM3         = parseFloat(document.getElementById('DV_DT_CM3').value);
+  var TOTAL_SHELL_RATIO = parseFloat(document.getElementById('TOTAL_SHELL_RATIO').value);
+  var BULK_DENSITY      = parseFloat(document.getElementById('BULK_DENSITY').value);
+  var DV_DT = DV_DT_CM3 * 1e-6;
 
-  const DV_DT = DV_DT_CM3 * 1e-6; // cm³ → m³
+  var Ca_up   = parseFloat(document.getElementById('Ca_up').value);
+  var Ca_down = parseFloat(document.getElementById('Ca_down').value);
+  var Alk_up  = parseFloat(document.getElementById('Alk_up').value);
+  var Alk_down= parseFloat(document.getElementById('Alk_down').value);
+  var Q_up    = parseFloat(document.getElementById('Q_up').value);
+  var Q_down  = parseFloat(document.getElementById('Q_down').value);
+  var Ca_top  = parseFloat(document.getElementById('Ca_top').value);
+  var Ca_bot  = parseFloat(document.getElementById('Ca_bot').value);
+  var Alk_top = parseFloat(document.getElementById('Alk_top').value);
+  var Alk_bot = parseFloat(document.getElementById('Alk_bot').value);
 
-  // Read flux inputs
-  const Ca_up   = parseFloat(document.getElementById('Ca_up').value);   // mg/L = g/m³ directly
-  const Ca_down = parseFloat(document.getElementById('Ca_down').value);
-  const Alk_up  = parseFloat(document.getElementById('Alk_up').value);
-  const Alk_down= parseFloat(document.getElementById('Alk_down').value);
-  const Q_up    = parseFloat(document.getElementById('Q_up').value);
-  const Q_down  = parseFloat(document.getElementById('Q_down').value);
+  // Eq 1: Spatial Ca Flux (mol/day)
+  var J_Ca_S = (Ca_up * Q_up - Ca_down * Q_down) * SEC_PER_DAY / MOLAR_MASS_CA;
+  // Eq 2: Spatial Alk Flux (mol/day)
+  var J_Alk_S = (Alk_up * Q_up - Alk_down * Q_down) * SEC_PER_DAY / EQ_WEIGHT_ALK * 0.5;
+  // Eq 3: Residence Fluxes
+  var VdivTau = Q_down * SEC_PER_DAY;
+  var J_Ca_R  = (Ca_top - Ca_bot) * VdivTau / MOLAR_MASS_CA;
+  var J_Alk_R = (Alk_top - Alk_bot) * VdivTau / EQ_WEIGHT_ALK * 0.5;
 
-  const Ca_top  = parseFloat(document.getElementById('Ca_top').value);  // mg/L = g/m³ directly
-  const Ca_bot  = parseFloat(document.getElementById('Ca_bot').value);
-  const Alk_top = parseFloat(document.getElementById('Alk_top').value);
-  const Alk_bot = parseFloat(document.getElementById('Alk_bot').value);
-
-  // ─── Eq 1: Spatial Ca Flux (mol/day)
-  const J_Ca_S = (Ca_up * Q_up - Ca_down * Q_down) * SEC_PER_DAY * (1 / MOLAR_MASS_CA);
-
-  // ─── Eq 2: Spatial Alk Flux (mol/day) — stoichiometric factor ½
-  const J_Alk_S = (Alk_up * Q_up - Alk_down * Q_down) * SEC_PER_DAY * (1 / EQ_WEIGHT_ALK) * 0.5;
-
-  // ─── Eq 3: Residence Fluxes — V/τ = Q_down * 86400
-  const VdivTau = Q_down * SEC_PER_DAY;
-  const J_Ca_R  = (Ca_top - Ca_bot) * VdivTau * (1 / MOLAR_MASS_CA);
-  const J_Alk_R = (Alk_top - Alk_bot) * VdivTau * (1 / EQ_WEIGHT_ALK) * 0.5;
-
-  const fluxes = {
-    Ca_S:  { J: J_Ca_S,  label: 'Ca Spatial',  pill: 'fp-ca-s'  },
-    Alk_S: { J: J_Alk_S, label: 'Alk Spatial', pill: 'fp-alk-s' },
-    Ca_R:  { J: J_Ca_R,  label: 'Ca Res.',      pill: 'fp-ca-r'  },
-    Alk_R: { J: J_Alk_R, label: 'Alk Res.',     pill: 'fp-alk-r' },
+  var fluxDefs = {
+    Ca_S:  { J: J_Ca_S,  label: 'Ca Long.',  pill: 'fp-ca-s'  },
+    Alk_S: { J: J_Alk_S, label: 'Alk Long.', pill: 'fp-alk-s' },
+    Ca_R:  { J: J_Ca_R,  label: 'Ca Vert.',      pill: 'fp-ca-r'  },
+    Alk_R: { J: J_Alk_R, label: 'Alk Vert.',     pill: 'fp-alk-r' }
   };
 
-  // ─── Eqs 4–7: Physiological scaling
-  const results = {};
-  for (const [key, f] of Object.entries(fluxes)) {
-    const m_caco3 = f.J * MOLAR_MASS_CACO3 * 1e-6;         // t/day
-    const V_bio   = m_caco3 * TOTAL_SHELL_RATIO / BULK_DENSITY; // m³/day
-    const V_bio_pos = Math.max(V_bio, 0);
-    const N = V_bio_pos / DV_DT;
-    const D = N / AREA;
-    results[key] = { ...f, m_caco3, V_bio, V_bio_pos, N, D, active: activeMethods[key] };
-  }
+  // Eqs 4-7: Physiological scaling
+  var results = {};
+  Object.keys(fluxDefs).forEach(function(key) {
+    var f = fluxDefs[key];
+    var m_caco3   = f.J * MOLAR_MASS_CACO3 * 1e-6;
+    var V_bio     = m_caco3 * TOTAL_SHELL_RATIO / BULK_DENSITY;
+    var V_bio_pos = Math.max(V_bio, 0);
+    var N = V_bio_pos / DV_DT;
+    var D = N / AREA;
+    results[key] = { J: f.J, label: f.label, pill: f.pill,
+                     m_caco3: m_caco3, V_bio: V_bio, V_bio_pos: V_bio_pos,
+                     N: N, D: D, active: activeMethods[key] };
+  });
 
-  // ─── Combined model (active positive fluxes only)
-  const activeKeys = Object.keys(results).filter(k => results[k].active && results[k].V_bio > 0);
-  const allDensities = activeKeys.map(k => results[k].D);
-  const model_mean = allDensities.length > 0 ? allDensities.reduce((a,b)=>a+b,0)/allDensities.length : 0;
-  const model_std  = allDensities.length > 1
-    ? Math.sqrt(allDensities.map(d=>(d-model_mean)**2).reduce((a,b)=>a+b,0)/allDensities.length)
-    : 0;
+  // Combined: active positive fluxes only
+  var activeKeys = Object.keys(results).filter(function(k) {
+    return results[k].active && results[k].V_bio > 0;
+  });
+  var allDensities = activeKeys.map(function(k) { return results[k].D; });
+  var model_mean = allDensities.length > 0
+    ? allDensities.reduce(function(a,b){return a+b;}, 0) / allDensities.length : 0;
+  var model_std = allDensities.length > 1
+    ? Math.sqrt(allDensities.map(function(d){return Math.pow(d-model_mean,2);})
+        .reduce(function(a,b){return a+b;},0) / allDensities.length) : 0;
+  var avgCaCO3 = activeKeys.length > 0
+    ? activeKeys.map(function(k){return results[k].m_caco3;})
+        .reduce(function(a,b){return a+b;},0) / activeKeys.length : 0;
+  var total_N = activeKeys.length > 0
+    ? activeKeys.map(function(k){return results[k].N;})
+        .reduce(function(a,b){return a+b;},0) / activeKeys.length : 0;
 
-  const avgCaCO3 = activeKeys.map(k=>results[k].m_caco3).reduce((a,b)=>a+b,0) / Math.max(activeKeys.length,1);
-  const total_N  = activeKeys.map(k=>results[k].N).reduce((a,b)=>a+b,0) / Math.max(activeKeys.length,1);
+  // Survey data
+  var surveyData = getSurveyData();
+  var surveyVals = surveyData.map(function(d){return d.val;});
+  var survey_mean = surveyVals.length > 0
+    ? surveyVals.reduce(function(a,b){return a+b;},0) / surveyVals.length : null;
+  var survey_std = surveyVals.length > 1
+    ? Math.sqrt(surveyVals.map(function(v){return Math.pow(v-survey_mean,2);})
+        .reduce(function(a,b){return a+b;},0) / (surveyVals.length-1)) : 0;
 
-  // ─── Survey data
-  const surveyData = getSurveyData();
-  const surveyVals = surveyData.map(d=>d.val);
-  const survey_mean = surveyVals.length > 0 ? surveyVals.reduce((a,b)=>a+b,0)/surveyVals.length : null;
-  const survey_std  = surveyVals.length > 1
-    ? Math.sqrt(surveyVals.map(v=>(v-survey_mean)**2).reduce((a,b)=>a+b,0)/(surveyVals.length-1))
-    : 0;
-
-  // ─── Update metric cards
-  document.getElementById('m_density').textContent    = fmtNum(model_mean, 0);
+  // Update metric cards
+  document.getElementById('m_density').textContent     = fmtNum(model_mean, 0);
   document.getElementById('m_survey_mean').textContent = survey_mean !== null ? fmtNum(survey_mean, 0) : '—';
   document.getElementById('m_caco3').textContent       = avgCaCO3.toFixed(2);
   document.getElementById('m_pop').textContent         = (total_N/1e6).toFixed(2);
 
-  // ─── Update status
-  const tau = V_LAKE / (Q_down * SEC_PER_DAY);
+  // Status bar
+  var tau = V_LAKE / (Q_down * SEC_PER_DAY);
   document.getElementById('statusMsg').textContent =
-    `Model run complete — τ = ${tau.toFixed(1)} days | Active methods: ${activeKeys.length}/4 | Combined density: ${fmtNum(model_mean,0)} ind/m²`;
+    'Model run complete — τ = ' + tau.toFixed(1) + ' days | Active methods: ' +
+    activeKeys.length + '/4 | Combined density: ' + fmtNum(model_mean,0) + ' ind/m²';
+  document.getElementById('statusDot').style.background = '#00ff9d';
 
-  // ─── Update results table
-  const tbody = document.getElementById('resultsBody');
+  // Results table
+  var tbody = document.getElementById('resultsBody');
   tbody.innerHTML = '';
-  for (const [key, r] of Object.entries(results)) {
-    const ratioStr = survey_mean ? ((r.D / survey_mean)*100).toFixed(0) + '%' : '—';
-    const statusColor = !r.active ? 'var(--muted)' : r.J <= 0 ? 'var(--red)' : 'var(--accent2)';
-    const statusLabel = !r.active ? 'DISABLED' : r.J <= 0 ? 'DISSOLUTION' : 'PRECIPITATION';
-    tbody.innerHTML += `
-      <tr style="${!r.active ? 'opacity:0.4' : ''}">
-        <td><span class="flux-pill ${r.pill}">${r.label}</span></td>
-        <td class="${r.J > 0 ? 'val-pos' : 'val-neg'}">${fmtNum(r.J, 0)}</td>
-        <td class="${r.m_caco3 > 0 ? 'val-pos' : 'val-neg'}">${r.m_caco3.toFixed(3)}</td>
-        <td class="val-neutral">${r.V_bio.toFixed(4)}</td>
-        <td class="val-neutral">${fmtSI(r.N, 2)}</td>
-        <td class="${r.D > 0 ? 'val-pos' : 'val-neutral'}">${fmtNum(r.D, 1)}</td>
-        <td class="val-survey">${ratioStr}</td>
-        <td style="color:${statusColor};font-size:0.65rem;letter-spacing:1px">${statusLabel}</td>
-      </tr>`;
-  }
-
-  // Combined row
-  tbody.innerHTML += `
-    <tr style="border-top:1px solid var(--accent);opacity:0.9">
-      <td><span class="flux-pill fp-ca-r">Combined</span></td>
-      <td colspan="3" style="color:var(--text-dim);font-size:0.7rem">— weighted average —</td>
-      <td class="val-neutral">${fmtSI(total_N, 2)}</td>
-      <td class="val-pos" style="font-weight:600">${fmtNum(model_mean, 1)}</td>
-      <td class="val-survey">${survey_mean ? ((model_mean/survey_mean)*100).toFixed(0)+'%' : '—'}</td>
-      <td style="color:var(--accent);font-size:0.65rem;letter-spacing:1px">COMBINED</td>
-    </tr>`;
-
-  // ─── Survey comparison table
-  const surveyComp = document.getElementById('surveyCompBody');
-  surveyComp.innerHTML = '';
-  surveyData.forEach(site => {
-    const diff = site.val - model_mean;
-    const ratio = model_mean > 0 ? (site.val / model_mean).toFixed(2) : '—';
-    const within = Math.abs(diff) <= model_std;
-    surveyComp.innerHTML += `
-      <tr>
-        <td style="color:var(--text)">${site.name}</td>
-        <td class="val-survey">${fmtNum(site.val, 1)}</td>
-        <td class="${diff > 0 ? 'val-pos' : 'val-neg'}">${diff > 0 ? '+' : ''}${fmtNum(diff, 1)}</td>
-        <td class="val-neutral">${ratio}×</td>
-        <td style="color:${within ? 'var(--accent2)' : 'var(--warn)'};font-size:0.7rem;letter-spacing:1px">${within ? '✓ YES' : '✗ NO'}</td>
-      </tr>`;
+  Object.keys(results).forEach(function(key) {
+    var r = results[key];
+    var ratioStr = survey_mean ? (r.D / survey_mean * 100).toFixed(0) + '%' : '—';
+    var statusColor = !r.active ? 'var(--muted)' : r.J <= 0 ? 'var(--red)' : 'var(--accent2)';
+    var statusLabel = !r.active ? 'DISABLED' : r.J <= 0 ? 'DISSOLUTION' : 'PRECIPITATION';
+    tbody.innerHTML +=
+      '<tr style="' + (!r.active ? 'opacity:0.4' : '') + '">' +
+      '<td><span class="flux-pill ' + r.pill + '">' + r.label + '</span></td>' +
+      '<td class="' + (r.J > 0 ? 'val-pos' : 'val-neg') + '">' + fmtNum(r.J, 0) + '</td>' +
+      '<td class="' + (r.m_caco3 > 0 ? 'val-pos' : 'val-neg') + '">' + r.m_caco3.toFixed(3) + '</td>' +
+      '<td class="val-neutral">' + r.V_bio.toFixed(4) + '</td>' +
+      '<td class="val-neutral">' + fmtSI(r.N, 2) + '</td>' +
+      '<td class="' + (r.D > 0 ? 'val-pos' : 'val-neutral') + '">' + fmtNum(r.D, 1) + '</td>' +
+      '<td class="val-survey">' + ratioStr + '</td>' +
+      '<td style="color:' + statusColor + ';font-size:0.65rem;letter-spacing:1px">' + statusLabel + '</td>' +
+      '</tr>';
   });
+  tbody.innerHTML +=
+    '<tr style="border-top:1px solid var(--accent)">' +
+    '<td><span class="flux-pill fp-ca-r">Combined</span></td>' +
+    '<td colspan="3" style="color:var(--text-dim);font-size:0.7rem">— weighted average —</td>' +
+    '<td class="val-neutral">' + fmtSI(total_N, 2) + '</td>' +
+    '<td class="val-pos" style="font-weight:600">' + fmtNum(model_mean, 1) + '</td>' +
+    '<td class="val-survey">' + (survey_mean ? (model_mean/survey_mean*100).toFixed(0)+'%' : '—') + '</td>' +
+    '<td style="color:var(--accent);font-size:0.65rem;letter-spacing:1px">COMBINED</td>' +
+    '</tr>';
+
+  // Survey comparison table
+  var surveyComp = document.getElementById('surveyCompBody');
+  surveyComp.innerHTML = '';
   if (surveyData.length === 0) {
-    surveyComp.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:12px;font-family:\'Share Tech Mono\',monospace;font-size:0.75rem">NO SURVEY DATA ENTERED</td></tr>';
+    surveyComp.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:12px;font-size:0.75rem">NO SURVEY DATA ENTERED</td></tr>';
+  } else {
+    surveyData.forEach(function(site) {
+      var diff = site.val - model_mean;
+      var ratio = model_mean > 0 ? (site.val / model_mean).toFixed(2) : '—';
+      var within = Math.abs(diff) <= model_std;
+      surveyComp.innerHTML +=
+        '<tr>' +
+        '<td style="color:var(--text)">' + site.name + '</td>' +
+        '<td class="val-survey">' + fmtNum(site.val, 1) + '</td>' +
+        '<td class="' + (diff > 0 ? 'val-pos' : 'val-neg') + '">' + (diff > 0 ? '+' : '') + fmtNum(diff, 1) + '</td>' +
+        '<td class="val-neutral">' + ratio + '×</td>' +
+        '<td style="color:' + (within ? 'var(--accent2)' : 'var(--warn)') + ';font-size:0.7rem;letter-spacing:1px">' + (within ? '✓ YES' : '✗ NO') + '</td>' +
+        '</tr>';
+    });
   }
 
-  // ─── CHARTS
+  // Draw charts
   drawFluxChart(results);
   drawDensityChart(results, model_mean, model_std, surveyData, survey_mean, survey_std);
   drawBiovolChart(results);
-  drawSensitivityChart(AREA, TOTAL_SHELL_RATIO, BULK_DENSITY, activeKeys, results, survey_mean);
+  drawSensitivityChart(AREA, DV_DT, activeKeys, results, survey_mean);
 }
 
 // ═══════════════════════════════════════════════════════
-//  CHART HELPERS
+//  CHARTS
 // ═══════════════════════════════════════════════════════
-const chartDefaults = {
-  plugins: { legend: { labels: { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } } } },
-  scales: {
-    x: { ticks: { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } }, grid: { color: 'rgba(14,74,110,0.25)' } },
-    y: { ticks: { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } }, grid: { color: 'rgba(14,74,110,0.25)' } }
-  }
-};
+var CHART_TICK  = { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } };
+var CHART_GRID  = { color: 'rgba(14,74,110,0.25)' };
+var CHART_LEGEND= { labels: { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } } };
 
 function destroyChart(id) {
   if (charts[id]) { charts[id].destroy(); delete charts[id]; }
 }
 
+function axisTitle(text) {
+  return { display: true, text: text, color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 9 } };
+}
+
 function drawFluxChart(results) {
   destroyChart('fluxChart');
-  const keys = Object.keys(results);
-  const labels = keys.map(k => results[k].label);
-  const vals   = keys.map(k => results[k].m_caco3);
-  const colors = ['rgba(255,157,0,0.7)', 'rgba(157,0,255,0.7)', 'rgba(0,200,255,0.7)', 'rgba(0,255,157,0.7)'];
-  const borders = ['#ff9d00', '#9d00ff', '#00c8ff', '#00ff9d'];
+  var keys    = Object.keys(results);
+  var labels  = keys.map(function(k){ return results[k].label; });
+  var vals    = keys.map(function(k){ return results[k].m_caco3; });
+  var colors  = ['rgba(255,157,0,0.7)','rgba(157,0,255,0.7)','rgba(0,200,255,0.7)','rgba(0,255,157,0.7)'];
+  var borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d'];
   charts['fluxChart'] = new Chart(document.getElementById('fluxChart'), {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'CaCO₃ Flux (t/day)',
-        data: vals,
-        backgroundColor: colors,
-        borderColor: borders,
-        borderWidth: 1,
-      }]
-    },
-    options: {
-      ...chartDefaults,
-      responsive: true,
-      plugins: { ...chartDefaults.plugins, title: { display: false } },
-      scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, title: { display: true, text: 't/day', color: '#5a8aaa', font:{family:'Share Tech Mono',size:9} } } }
+    data: { labels: labels, datasets: [{ label: 'CaCO₃ Flux (t/day)', data: vals,
+      backgroundColor: colors, borderColor: borders, borderWidth: 1 }] },
+    options: { responsive: true,
+      plugins: { legend: CHART_LEGEND },
+      scales: {
+        x: { ticks: CHART_TICK, grid: CHART_GRID },
+        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('t/day') }
+      }
     }
   });
 }
 
 function drawDensityChart(results, model_mean, model_std, surveyData, survey_mean, survey_std) {
   destroyChart('densityChart');
-  const labels = [...Object.keys(results).map(k=>results[k].label), 'Combined Model', 'Survey Mean'];
-  const densities = [...Object.keys(results).map(k=>results[k].D), model_mean, survey_mean];
-  const colors = [
-    'rgba(255,157,0,0.6)', 'rgba(157,0,255,0.6)',
-    'rgba(0,200,255,0.6)', 'rgba(0,255,157,0.6)',
-    'rgba(0,200,255,0.9)', 'rgba(255,107,53,0.9)'
-  ];
-  const borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d','#00c8ff','#ff6b35'];
+  var keys      = Object.keys(results);
+  var labels    = keys.map(function(k){ return results[k].label; });
+  labels.push('Combined Model');
+  labels.push('Survey Mean');
+  var densities = keys.map(function(k){ return results[k].D; });
+  densities.push(model_mean);
+  densities.push(survey_mean);
+  var colors  = ['rgba(255,157,0,0.6)','rgba(157,0,255,0.6)','rgba(0,200,255,0.6)','rgba(0,255,157,0.6)','rgba(0,200,255,0.9)','rgba(255,107,53,0.9)'];
+  var borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d','#00c8ff','#ff6b35'];
 
-  const datasets = [{
-    type: 'bar',
-    label: 'Density (ind/m²)',
-    data: densities,
-    backgroundColor: colors,
-    borderColor: borders,
-    borderWidth: 1,
-  }];
-
-  // Add individual survey sites as scatter
-  if (surveyData.length > 0) {
-    const scatterX = surveyData.map(d => d.name);
-    datasets.push({
-      type: 'scatter',
-      label: 'Survey Sites',
-      data: surveyData.map((d, i) => ({ x: d.name, y: d.val })),
-      backgroundColor: 'rgba(255,107,53,0.8)',
-      borderColor: '#ff6b35',
-      pointRadius: 6,
-    });
-  }
+  // Survey lines plugin
+  var surveyLinesPlugin = {
+    id: 'surveyLines',
+    afterDraw: function(chart) {
+      var ctx2  = chart.ctx;
+      var yAxis = chart.scales.y;
+      var xAxis = chart.scales.x;
+      if (!yAxis || !xAxis) return;
+      surveyData.forEach(function(site, i) {
+        var yPx = yAxis.getPixelForValue(site.val);
+        ctx2.save();
+        ctx2.strokeStyle = 'hsl(' + (30 + i*40) + ',90%,60%)';
+        ctx2.lineWidth = 1;
+        ctx2.setLineDash([4,3]);
+        ctx2.globalAlpha = 0.7;
+        ctx2.beginPath();
+        ctx2.moveTo(xAxis.left, yPx);
+        ctx2.lineTo(xAxis.right, yPx);
+        ctx2.stroke();
+        ctx2.setLineDash([]);
+        ctx2.globalAlpha = 1;
+        ctx2.font = '9px Share Tech Mono';
+        ctx2.fillStyle = 'hsl(' + (30 + i*40) + ',90%,60%)';
+        ctx2.fillText(site.name, xAxis.left + 4, yPx - 3);
+        ctx2.restore();
+      });
+    }
+  };
 
   charts['densityChart'] = new Chart(document.getElementById('densityChart'), {
     type: 'bar',
-    data: { labels, datasets: datasets.slice(0,1) },
-    options: {
-      ...chartDefaults,
-      responsive: true,
-      plugins: {
-        ...chartDefaults.plugins,
-        annotation: {},
-        tooltip: {
-          callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${fmtNum(ctx.raw, 1)} ind/m²`
-          }
-        }
-      },
-      scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, title: { display: true, text: 'ind/m²', color: '#5a8aaa', font:{family:'Share Tech Mono',size:9} }, min: 0 } }
-    }
+    data: { labels: labels, datasets: [{ label: 'Density (ind/m²)', data: densities,
+      backgroundColor: colors, borderColor: borders, borderWidth: 1 }] },
+    options: { responsive: true,
+      plugins: { legend: CHART_LEGEND },
+      scales: {
+        x: { ticks: CHART_TICK, grid: CHART_GRID },
+        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('ind/m²'), min: 0 }
+      }
+    },
+    plugins: [surveyLinesPlugin]
   });
-
-  // Add survey site horizontal lines as annotations via post-draw
-  const chart = charts['densityChart'];
-  const originalDraw = chart.draw.bind(chart);
-  chart.draw = function() {
-    originalDraw();
-    const ctx2 = chart.ctx;
-    const yAxis = chart.scales.y;
-    const xAxis = chart.scales.x;
-    if (!yAxis || !xAxis) return;
-    surveyData.forEach((site, i) => {
-      const yPx = yAxis.getPixelForValue(site.val);
-      ctx2.save();
-      ctx2.strokeStyle = `hsl(${30 + i*40},90%,60%)`;
-      ctx2.lineWidth = 1;
-      ctx2.setLineDash([4,3]);
-      ctx2.globalAlpha = 0.7;
-      ctx2.beginPath();
-      ctx2.moveTo(xAxis.left, yPx);
-      ctx2.lineTo(xAxis.right, yPx);
-      ctx2.stroke();
-      ctx2.globalAlpha = 1;
-      ctx2.font = '9px Share Tech Mono';
-      ctx2.fillStyle = `hsl(${30 + i*40},90%,60%)`;
-      ctx2.fillText(site.name, xAxis.left + 4, yPx - 3);
-      ctx2.restore();
-    });
-  };
 }
 
 function drawBiovolChart(results) {
   destroyChart('biovolChart');
-  const keys = Object.keys(results);
-  const labels = keys.map(k => results[k].label);
-  const vals = keys.map(k => results[k].V_bio);
-  const colors = ['rgba(255,157,0,0.6)', 'rgba(157,0,255,0.6)', 'rgba(0,200,255,0.6)', 'rgba(0,255,157,0.6)'];
-  const borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d'];
-
+  var keys    = Object.keys(results);
+  var labels  = keys.map(function(k){ return results[k].label; });
+  var vals    = keys.map(function(k){ return results[k].V_bio; });
+  var colors  = ['rgba(255,157,0,0.6)','rgba(157,0,255,0.6)','rgba(0,200,255,0.6)','rgba(0,255,157,0.6)'];
+  var borders = ['#ff9d00','#9d00ff','#00c8ff','#00ff9d'];
   charts['biovolChart'] = new Chart(document.getElementById('biovolChart'), {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [{ label: 'V_bio (m³/day)', data: vals, backgroundColor: colors, borderColor: borders, borderWidth: 1 }]
-    },
-    options: {
-      ...chartDefaults,
-      responsive: true,
-      plugins: {
-        ...chartDefaults.plugins,
-        tooltip: { callbacks: { label: ctx => `${fmtNum(ctx.raw, 4)} m³/day` } }
-      },
-      scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, title: { display: true, text: 'm³/day', color: '#5a8aaa', font:{family:'Share Tech Mono',size:9} } } }
+    data: { labels: labels, datasets: [{ label: 'V_bio (m³/day)', data: vals,
+      backgroundColor: colors, borderColor: borders, borderWidth: 1 }] },
+    options: { responsive: true,
+      plugins: { legend: CHART_LEGEND },
+      scales: {
+        x: { ticks: CHART_TICK, grid: CHART_GRID },
+        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('m³/day') }
+      }
     }
   });
 }
 
-function drawSensitivityChart(AREA, TOTAL_SHELL_RATIO, BULK_DENSITY, activeKeys, results, survey_mean) {
+function drawSensitivityChart(AREA, DV_DT, activeKeys, results, survey_mean) {
   destroyChart('sensitivityChart');
-  // Sensitivity: vary dv/dt from 0.001 to 0.02 cm3/day/ind
-  const dvdt_range = Array.from({length: 40}, (_, i) => 0.001 + i * 0.0005);
-  const dvdt_m3 = dvdt_range.map(v => v * 1e-6);
+  var dvdt_range = [];
+  for (var i = 0; i < 40; i++) { dvdt_range.push((0.001 + i * 0.0005) * 1e-6); }
+  var labels = dvdt_range.map(function(v){ return (v*1e6).toFixed(4); });
 
-  // Use average V_bio from active positive fluxes
-  const activeVbio = activeKeys.length > 0
-    ? activeKeys.map(k=>results[k].V_bio_pos).reduce((a,b)=>a+b,0)/activeKeys.length
-    : 0;
+  var activeVbio = 0;
+  if (activeKeys.length > 0) {
+    activeVbio = activeKeys.map(function(k){ return results[k].V_bio_pos; })
+      .reduce(function(a,b){return a+b;},0) / activeKeys.length;
+  }
 
-  const densities = dvdt_m3.map(dv => dv > 0 ? (activeVbio / dv) / AREA : 0);
+  var densities = dvdt_range.map(function(dv){ return dv > 0 ? (activeVbio / dv) / AREA : 0; });
 
-  const surveyLine = survey_mean !== null
-    ? Array(dvdt_range.length).fill(survey_mean)
-    : null;
-
-  const datasets = [{
-    label: 'Model Density',
-    data: densities,
-    borderColor: '#00c8ff',
-    backgroundColor: 'rgba(0,200,255,0.08)',
-    borderWidth: 2,
-    fill: true,
-    tension: 0.3,
-    pointRadius: 0,
+  var datasets = [{
+    label: 'Model Density', data: densities,
+    borderColor: '#00c8ff', backgroundColor: 'rgba(0,200,255,0.08)',
+    borderWidth: 2, fill: true, tension: 0.3, pointRadius: 0
   }];
-
-  if (surveyLine) {
+  if (survey_mean !== null) {
+    var surveyLine = dvdt_range.map(function(){ return survey_mean; });
     datasets.push({
-      label: 'Survey Mean',
-      data: surveyLine,
-      borderColor: '#ff6b35',
-      borderWidth: 1.5,
-      borderDash: [5,4],
-      pointRadius: 0,
-      fill: false,
+      label: 'Survey Mean', data: surveyLine,
+      borderColor: '#ff6b35', borderWidth: 1.5,
+      borderDash: [5,4], pointRadius: 0, fill: false
     });
   }
 
   charts['sensitivityChart'] = new Chart(document.getElementById('sensitivityChart'), {
     type: 'line',
-    data: {
-      labels: dvdt_range.map(v => v.toFixed(4)),
-      datasets
-    },
-    options: {
-      ...chartDefaults,
-      responsive: true,
-      plugins: {
-        ...chartDefaults.plugins,
-        tooltip: { callbacks: { label: ctx => `${fmtNum(ctx.raw, 0)} ind/m²` } }
-      },
+    data: { labels: labels, datasets: datasets },
+    options: { responsive: true,
+      plugins: { legend: CHART_LEGEND },
       scales: {
-        x: { ...chartDefaults.scales.x, title: { display: true, text: 'dV/dt (cm³/day/ind)', color: '#5a8aaa', font:{family:'Share Tech Mono',size:9} } },
-        y: { ...chartDefaults.scales.y, title: { display: true, text: 'ind/m²', color: '#5a8aaa', font:{family:'Share Tech Mono',size:9} }, min: 0 }
+        x: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('dV/dt (cm³/day/ind)') },
+        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('ind/m²'), min: 0 }
       }
     }
   });
@@ -1860,15 +1816,14 @@ function drawSensitivityChart(AREA, TOTAL_SHELL_RATIO, BULK_DENSITY, activeKeys,
 // ═══════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  // Initialise range display labels
-  ['V_LAKE','AREA','DV_DT_CM3','TOTAL_SHELL_RATIO','BULK_DENSITY'].forEach(id => {
-    const el = document.getElementById(id);
+window.addEventListener('DOMContentLoaded', function() {
+  ['V_LAKE','AREA','DV_DT_CM3','TOTAL_SHELL_RATIO','BULK_DENSITY'].forEach(function(id) {
+    var el = document.getElementById(id);
     if (el) syncRange(id, el.value);
   });
-  // Auto-run on load
   runModel();
 });
+
 </script>
 </body>
 </html>
