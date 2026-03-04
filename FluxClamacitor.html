@@ -12,15 +12,15 @@
     --bg: #030b14;
     --panel: #071828;
     --panel2: #0b2035;
-    --border: #0e4a6e;
+    --border: #1a6090;
     --accent: #00c8ff;
     --accent2: #00ff9d;
     --warn: #ff6b35;
-    --muted: #2a5070;
+    --muted: #3d6e8a;
     --text: #c8e8f8;
-    --text-dim: #5a8aaa;
+    --text-dim: #8ab8d0;
     --fixed: #1a3a50;
-    --fixed-text: #4a8aaa;
+    --fixed-text: #7aaac8;
     --green: #00ff9d;
     --orange: #ff9d00;
     --purple: #9d00ff;
@@ -33,7 +33,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: 'Exo 2', sans-serif;
-    font-weight: 300;
+    font-weight: 400;
     min-height: 100vh;
     overflow-x: hidden;
   }
@@ -47,8 +47,8 @@
       0deg,
       transparent,
       transparent 2px,
-      rgba(0,200,255,0.015) 2px,
-      rgba(0,200,255,0.015) 4px
+      rgba(0,200,255,0.008) 2px,
+      rgba(0,200,255,0.008) 4px
     );
     pointer-events: none;
     z-index: 9999;
@@ -1000,7 +1000,7 @@
         <div class="section-sep" style="margin-top:10px">Growth &amp; Physiology</div>
 
         <div class="param-group">
-          <label class="param-label">Individual Growth Rate dV/dt <span class="unit">(cm³/day/ind)</span></label>
+          <label class="param-label">Individual Growth Rate d<i>V</i>/d<i>t</i> <span class="unit">(cm³ d⁻¹ ind⁻¹)</span></label>
           <div class="range-row">
             <input type="range" id="r_DV_DT_CM3" min="0.001" max="0.05" step="0.0001" value="0.0055" oninput="syncInput('DV_DT_CM3',this.value)">
             <span class="range-val" id="rv_DV_DT_CM3">0.0055</span>
@@ -1019,7 +1019,7 @@
         </div>
 
         <div class="param-group">
-          <label class="param-label">Shell Bulk Density <span class="unit">(t/m³)</span></label>
+          <label class="param-label">Shell Bulk Density <span class="unit">(g cm⁻³ = t m⁻³)</span></label>
           <div class="range-row">
             <input type="range" id="r_BULK_DENSITY" min="0.8" max="2.0" step="0.01" value="1.15" oninput="syncInput('BULK_DENSITY',this.value)">
             <span class="range-val" id="rv_BULK_DENSITY">1.15</span>
@@ -1071,27 +1071,27 @@
 
         <div class="flux-inputs-grid">
           <div class="param-group">
-            <label class="param-label">Ca Upstream <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Ca Upstream <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Ca_up" value="6.2" step="0.01">
           </div>
           <div class="param-group">
-            <label class="param-label">Ca Downstream <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Ca Downstream <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Ca_down" value="5.3" step="0.01">
           </div>
           <div class="param-group">
-            <label class="param-label">Alk Upstream <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Alk Upstream <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Alk_up" value="41.0" step="0.1">
           </div>
           <div class="param-group">
-            <label class="param-label">Alk Downstream <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Alk Downstream <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Alk_down" value="38.5" step="0.1">
           </div>
           <div class="param-group">
-            <label class="param-label">Q Upstream <span class="unit">(m³/s)</span></label>
+            <label class="param-label">Q Upstream <span class="unit">(m³ s⁻¹)</span></label>
             <input class="param-input" type="number" id="Q_up" value="50" step="1">
           </div>
           <div class="param-group">
-            <label class="param-label">Q Downstream <span class="unit">(m³/s)</span></label>
+            <label class="param-label">Q Downstream <span class="unit">(m³ s⁻¹)</span></label>
             <input class="param-input" type="number" id="Q_down" value="50" step="1">
           </div>
         </div>
@@ -1100,19 +1100,19 @@
 
         <div class="flux-inputs-grid">
           <div class="param-group">
-            <label class="param-label">Ca Top (2m) <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Ca Top (2m) <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Ca_top" value="6.0" step="0.01">
           </div>
           <div class="param-group">
-            <label class="param-label">Ca Bottom <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Ca Bottom <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Ca_bot" value="5.2" step="0.01">
           </div>
           <div class="param-group">
-            <label class="param-label">Alk Top <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Alk Top <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Alk_top" value="40.0" step="0.1">
           </div>
           <div class="param-group">
-            <label class="param-label">Alk Bottom <span class="unit">(mg/L)</span></label>
+            <label class="param-label">Alk Bottom <span class="unit">(mg L⁻¹)</span></label>
             <input class="param-input" type="number" id="Alk_bot" value="38.0" step="0.1">
           </div>
         </div>
@@ -1241,9 +1241,9 @@
           <thead>
             <tr>
               <th>Method</th>
-              <th>J_rem (mol/day)</th>
-              <th>m_CaCO₃ (t/day)</th>
-              <th>V_bio (m³/day)</th>
+              <th>J<sub>rem</sub> (mol d⁻¹)</th>
+              <th>m<sub>CaCO₃</sub> (t d⁻¹)</th>
+              <th>V<sub>bio</sub> (m³ d⁻¹)</th>
               <th>Population N</th>
               <th>Density (ind/m²)</th>
               <th>vs Survey Mean</th>
@@ -1362,7 +1362,7 @@
           </div>
           <div class="author-line">
             <span class="author-name">Deniz Özkundakci</span>
-            <span class="author-affil">— School of Science, University of Waikato, Hamilton, NZ</span>
+            <span class="author-affil">— Faculty of Agriculture &amp; Life Sciences, Lincoln University, NZ</span>
           </div>
           <div class="author-line">
             <span class="author-name">Deborah Hofstra</span>
@@ -1442,16 +1442,20 @@ function fmtSI(v, decimals) {
   decimals = decimals === undefined ? 2 : decimals;
   if (v === null || isNaN(v)) return '—';
   var abs = Math.abs(v);
-  if (abs >= 1e9)  return (v/1e9).toFixed(decimals) + '×10⁹';
-  if (abs >= 1e6)  return (v/1e6).toFixed(decimals) + '×10⁶';
-  if (abs >= 1e3)  return (v/1e3).toFixed(decimals) + '×10³';
-  return v.toFixed(decimals);
+  if (abs >= 1e9)  return (v/1e9).toLocaleString('en-NZ', {maximumFractionDigits: decimals}) + ' ×10⁹';
+  if (abs >= 1e6)  return (v/1e6).toLocaleString('en-NZ', {maximumFractionDigits: decimals}) + ' ×10⁶';
+  if (abs >= 1e3)  return (v/1e3).toLocaleString('en-NZ', {maximumFractionDigits: decimals}) + ' ×10³';
+  return v.toLocaleString('en-NZ', {maximumFractionDigits: decimals});
 }
 
 function fmtNum(v, decimals) {
   decimals = decimals === undefined ? 1 : decimals;
   if (v === null || isNaN(v)) return '—';
-  return v.toLocaleString('en-NZ', {maximumFractionDigits: decimals});
+  return v.toLocaleString('en-NZ', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
+    useGrouping: true
+  });
 }
 
 function syncInput(id, val) {
@@ -1671,16 +1675,16 @@ var COLOR_MAP = {
   Ca_R:  { bg: 'rgba(0,200,255,0.7)',  border: '#00c8ff' },
   Alk_R: { bg: 'rgba(0,255,157,0.7)', border: '#00ff9d' }
 };
-var CHART_TICK  = { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } };
+var CHART_TICK  = { color: '#8ab8d0', font: { family: 'Share Tech Mono', size: 10 } };
 var CHART_GRID  = { color: 'rgba(14,74,110,0.25)' };
-var CHART_LEGEND= { labels: { color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 10 } } };
+var CHART_LEGEND= { labels: { color: '#8ab8d0', font: { family: 'Share Tech Mono', size: 10 } } };
 
 function destroyChart(id) {
   if (charts[id]) { charts[id].destroy(); delete charts[id]; }
 }
 
 function axisTitle(text) {
-  return { display: true, text: text, color: '#5a8aaa', font: { family: 'Share Tech Mono', size: 9 } };
+  return { display: true, text: text, color: '#8ab8d0', font: { family: 'Share Tech Mono', size: 9 } };
 }
 
 function drawFluxChart(results) {
@@ -1692,13 +1696,13 @@ function drawFluxChart(results) {
   var borders = keys.map(function(k){ return COLOR_MAP[k].border; });
   charts['fluxChart'] = new Chart(document.getElementById('fluxChart'), {
     type: 'bar',
-    data: { labels: labels, datasets: [{ label: 'CaCO₃ Flux (t/day)', data: vals,
+    data: { labels: labels, datasets: [{ label: 'CaCO₃ Flux (t d⁻¹)', data: vals,
       backgroundColor: colors, borderColor: borders, borderWidth: 1 }] },
     options: { responsive: true,
       plugins: { legend: CHART_LEGEND },
       scales: {
         x: { ticks: CHART_TICK, grid: CHART_GRID },
-        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('t/day') }
+        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('t d⁻¹') }
       }
     }
   });
@@ -1773,13 +1777,13 @@ function drawBiovolChart(results) {
   var borders = keys.map(function(k){ return COLOR_MAP[k].border; });
   charts['biovolChart'] = new Chart(document.getElementById('biovolChart'), {
     type: 'bar',
-    data: { labels: labels, datasets: [{ label: 'V_bio (m³/day)', data: vals,
+    data: { labels: labels, datasets: [{ label: 'V<sub>bio</sub> (m³ d⁻¹)', data: vals,
       backgroundColor: colors, borderColor: borders, borderWidth: 1 }] },
     options: { responsive: true,
       plugins: { legend: CHART_LEGEND },
       scales: {
         x: { ticks: CHART_TICK, grid: CHART_GRID },
-        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('m³/day') }
+        y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('m³ d⁻¹') }
       }
     }
   });
@@ -1819,7 +1823,7 @@ function drawSensitivityChart(AREA, DV_DT, activeKeys, results, survey_mean) {
     options: { responsive: true,
       plugins: { legend: CHART_LEGEND },
       scales: {
-        x: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('dV/dt (cm³/day/ind)') },
+        x: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('dV/dt (cm³ d⁻¹ ind⁻¹)') },
         y: { ticks: CHART_TICK, grid: CHART_GRID, title: axisTitle('ind/m²'), min: 0 }
       }
     }
