@@ -677,14 +677,92 @@
   .clam-svg {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 0 6px rgba(0,200,255,0.7)) drop-shadow(0 0 18px rgba(0,200,255,0.35));
-    animation: clamPulse 3.5s ease-in-out infinite;
+    animation: fluxShellFlash 3.5s ease-in-out infinite;
   }
 
   @keyframes clamPulse {
     0%,100% { filter: drop-shadow(0 0 5px rgba(0,200,255,0.7)) drop-shadow(0 0 16px rgba(0,200,255,0.3)); }
     40%     { filter: drop-shadow(0 0 10px rgba(0,255,157,0.8)) drop-shadow(0 0 28px rgba(0,255,157,0.4)); }
     70%     { filter: drop-shadow(0 0 8px rgba(0,200,255,0.9)) drop-shadow(0 0 22px rgba(0,200,255,0.45)); }
+  }
+
+  @keyframes fluxShellFlash {
+    0%,4.5%,8.5%,12.5%,17%,100% {
+      filter: drop-shadow(0 0 5px rgba(0,200,255,0.65)) drop-shadow(0 0 14px rgba(0,200,255,0.28));
+    }
+    5.5%  {
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.95)) drop-shadow(0 0 38px rgba(0,229,255,0.9)) drop-shadow(0 0 64px rgba(0,229,255,0.5));
+    }
+    9.5%  {
+      filter: drop-shadow(0 0 16px rgba(0,255,157,0.95)) drop-shadow(0 0 32px rgba(0,255,157,0.7)) drop-shadow(0 0 52px rgba(0,255,157,0.35));
+    }
+    13.5% {
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.9)) drop-shadow(0 0 38px rgba(0,229,255,0.85)) drop-shadow(0 0 64px rgba(0,229,255,0.45));
+    }
+  }
+
+  /* ── Flux capacitor Y-bolt overlay ── */
+  .flux-wrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .flux-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .flux-arm {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+  }
+  .flux-arm-cyan  { stroke: #00e5ff; stroke-width: 2; }
+  .flux-arm-green { stroke: #00ff9d; stroke-width: 1.8; }
+  .flux-core-line {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 0.8;
+    stroke-linecap: round;
+    opacity: 0;
+  }
+  .flux-node { opacity: 0; }
+
+  /* BttF triple-flash pattern: flash at ~5.5%, ~9.5%, ~13.5% of 3.5 s cycle */
+  .flux-arm-left   { animation: fluxBolt 3.5s linear infinite; }
+  .flux-arm-right  { animation: fluxBolt 3.5s linear infinite 0.08s; }
+  .flux-arm-up     { animation: fluxBoltGreen 3.5s linear infinite 0.16s; }
+  .flux-core-left  { animation: fluxCore 3.5s linear infinite; }
+  .flux-core-right { animation: fluxCore 3.5s linear infinite 0.08s; }
+  .flux-core-up    { animation: fluxCore 3.5s linear infinite 0.16s; }
+  .flux-node-left  { animation: fluxNodeAnim 3.5s linear infinite; }
+  .flux-node-right { animation: fluxNodeAnim 3.5s linear infinite 0.08s; }
+  .flux-node-up    { animation: fluxNodeAnim 3.5s linear infinite 0.16s; }
+
+  @keyframes fluxBolt {
+    0%,4.5%,7%,9%,11.5%,14%,17%,100% { opacity: 0; }
+    5.5%,6%   { opacity: 0.95; }
+    9.5%,10%  { opacity: 0.85; }
+    13.5%,14% { opacity: 0.95; }
+  }
+  @keyframes fluxBoltGreen {
+    0%,4.5%,7%,9%,11.5%,14%,17%,100% { opacity: 0; }
+    5.5%,6%   { opacity: 1; }
+    9.5%,10%  { opacity: 0.9; }
+    13.5%,14% { opacity: 1; }
+  }
+  @keyframes fluxCore {
+    0%,4.5%,7%,9%,11.5%,14%,17%,100% { opacity: 0; }
+    5.5%,6%   { opacity: 1; }
+    9.5%,10%  { opacity: 1; }
+    13.5%,14% { opacity: 1; }
+  }
+  @keyframes fluxNodeAnim {
+    0%,4.5%,7%,9%,11.5%,14%,17%,100% { opacity: 0; }
+    5.5%,6%   { opacity: 1; }
+    9.5%,10%  { opacity: 0.9; }
+    13.5%,14% { opacity: 1; }
   }
 
   .clam-svg .shell-outer {
@@ -951,6 +1029,53 @@
         <circle class="umbo-dot" cx="55" cy="13" r="2.2"/>
 
       </svg>
+
+      <!-- Flux capacitor Y-bolt overlay -->
+      <div class="flux-wrap">
+        <svg class="flux-svg" viewBox="0 0 110 88" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="fluxGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Y-shape: centre node at ~(55,47), stem down, left arm, right arm -->
+          <!-- Left arm: centre → upper-left tip -->
+          <path class="flux-arm flux-arm-cyan flux-arm-left"
+            filter="url(#fluxGlow)"
+            d="M 55 47 L 42 52 L 26 44"/>
+          <path class="flux-core-line flux-core-left"
+            d="M 55 47 L 42 52 L 26 44"/>
+
+          <!-- Right arm: centre → upper-right tip -->
+          <path class="flux-arm flux-arm-cyan flux-arm-right"
+            filter="url(#fluxGlow)"
+            d="M 55 47 L 68 52 L 84 44"/>
+          <path class="flux-core-line flux-core-right"
+            d="M 55 47 L 68 52 L 84 44"/>
+
+          <!-- Up arm: centre → top (umbo area) -->
+          <path class="flux-arm flux-arm-green flux-arm-up"
+            filter="url(#fluxGlow)"
+            d="M 55 47 L 55 28 L 55 13"/>
+          <path class="flux-core-line flux-core-up"
+            d="M 55 47 L 55 28 L 55 13"/>
+
+          <!-- Tip nodes -->
+          <circle class="flux-node flux-node-left"  cx="26" cy="44" r="3"
+            fill="#00e5ff" filter="url(#fluxGlow)"/>
+          <circle class="flux-node flux-node-right" cx="84" cy="44" r="3"
+            fill="#00e5ff" filter="url(#fluxGlow)"/>
+          <circle class="flux-node flux-node-up"    cx="55" cy="13" r="3"
+            fill="#00ff9d" filter="url(#fluxGlow)"/>
+
+          <!-- Centre junction node -->
+          <circle cx="55" cy="47" r="2.5"
+            fill="#ffffff" filter="url(#fluxGlow)"
+            style="animation: fluxCore 3.5s linear infinite; opacity:0;"/>
+        </svg>
+      </div>
     </div>
     <div class="logo-box">
       <div class="title-main">⚗ Flux Clamacitor</div>
@@ -958,7 +1083,7 @@
     </div>
     <div class="header-badge">
       <span class="badge-pill badge-species">Corbicula fluminea</span>
-      <span class="badge-pill badge-model">Mass Balance v2.0</span>
+      <span class="badge-pill badge-model">Mass Balance v1.21</span>
     </div>
   </div>
 </header>
@@ -1362,7 +1487,7 @@
           </div>
           <div class="author-line">
             <span class="author-name">Deniz Özkundakci</span>
-            <span class="author-affil">— Faculty of Agriculture &amp; Life Sciences, Lincoln University, NZ</span>
+            <span class="author-affil">— School of Science, University of Waikato, NZ</span>
           </div>
           <div class="author-line">
             <span class="author-name">Deborah Hofstra</span>
