@@ -1078,7 +1078,7 @@
       </div>
     </div>
     <div class="logo-box">
-      <div class="title-main">⚗ Flux Clamacitor</div>
+      <div class="title-main">Flux Clamacitor</div>
       <div class="title-sub">Extending CaCO₃ Removal Fluxes to Population Estimates for Invasive Bivalve Incursions</div>
     </div>
     <div class="header-badge">
@@ -1902,7 +1902,7 @@ function drawBiovolChart(results) {
   var borders = keys.map(function(k){ return COLOR_MAP[k].border; });
   charts['biovolChart'] = new Chart(document.getElementById('biovolChart'), {
     type: 'bar',
-    data: { labels: labels, datasets: [{ label: 'V<sub>bio</sub> (m³ d⁻¹)', data: vals,
+    data: { labels: labels, datasets: [{ label: 'Vbio (m³ d⁻¹)', data: vals,
       backgroundColor: colors, borderColor: borders, borderWidth: 1 }] },
     options: { responsive: true,
       plugins: { legend: CHART_LEGEND },
