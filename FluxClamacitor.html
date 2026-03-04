@@ -655,6 +655,44 @@
     gap: 10px;
   }
 
+  /* Unit toggle pills */
+  .unit-toggle {
+    display: inline-flex;
+    gap: 0;
+    border: 1px solid var(--muted);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .unit-pill {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    padding: 2px 7px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+  }
+
+  .unit-pill:not(:last-child) {
+    border-right: 1px solid var(--muted);
+  }
+
+  .unit-pill.active {
+    background: rgba(0,200,255,0.18);
+    color: var(--accent);
+  }
+
+  .unit-pill:hover:not(.active) {
+    background: rgba(0,200,255,0.07);
+    color: var(--text);
+  }
+
   @media (max-width: 1200px) {
     .main-grid { grid-template-columns: 300px 1fr; }
     .metrics-row { grid-template-columns: repeat(2, 1fr); }
@@ -1104,21 +1142,33 @@
         <div class="section-sep">Lake / Catchment</div>
 
         <div class="param-group">
-          <label class="param-label">Lake Volume <span class="unit">(m³)</span></label>
+          <label class="param-label">Lake Volume <span class="unit" id="lbl_V_LAKE">(m³)</span>
+            <span class="unit-toggle">
+              <button class="unit-pill active" id="up_V_LAKE_m3" onclick="setVolumeUnit('m3')">m³</button>
+              <button class="unit-pill" id="up_V_LAKE_km3" onclick="setVolumeUnit('km3')">km³</button>
+            </span>
+          </label>
           <div class="range-row">
-            <input type="range" id="r_V_LAKE" min="1e6" max="5e8" step="1e6" value="85000000" oninput="syncInput('V_LAKE',this.value)">
+            <input type="range" id="r_V_LAKE" min="100000" max="500000000000" step="100000" value="85000000" oninput="syncInputDim('V_LAKE',this.value)">
             <span class="range-val" id="rv_V_LAKE">85×10⁶</span>
           </div>
-          <input class="param-input" type="number" id="V_LAKE" value="85000000" oninput="syncRange('V_LAKE',this.value)" placeholder="85000000">
+          <input class="param-input" type="number" id="V_LAKE_disp" value="85000000" oninput="syncRangeDim('V_LAKE',this.value)" placeholder="85000000">
+          <input type="hidden" id="V_LAKE" value="85000000">
         </div>
 
         <div class="param-group">
-          <label class="param-label">Colonizable Benthic Area <span class="unit">(m²)</span></label>
+          <label class="param-label">Colonizable Benthic Area <span class="unit" id="lbl_AREA">(m²)</span>
+            <span class="unit-toggle">
+              <button class="unit-pill active" id="up_AREA_m2" onclick="setAreaUnit('m2')">m²</button>
+              <button class="unit-pill" id="up_AREA_km2" onclick="setAreaUnit('km2')">km²</button>
+            </span>
+          </label>
           <div class="range-row">
-            <input type="range" id="r_AREA" min="1e5" max="2e7" step="1e5" value="7409000" oninput="syncInput('AREA',this.value)">
+            <input type="range" id="r_AREA" min="100000" max="2000000000" step="100000" value="7409000" oninput="syncInputDim('AREA',this.value)">
             <span class="range-val" id="rv_AREA">7.41×10⁶</span>
           </div>
-          <input class="param-input" type="number" id="AREA" value="7409000" oninput="syncRange('AREA',this.value)" placeholder="7409000">
+          <input class="param-input" type="number" id="AREA_disp" value="7409000" oninput="syncRangeDim('AREA',this.value)" placeholder="7409000">
+          <input type="hidden" id="AREA" value="7409000">
         </div>
 
         <div class="divider"></div>
@@ -1583,6 +1633,110 @@ function fmtNum(v, decimals) {
   });
 }
 
+// ═══════════════════════════════════════════════════════
+//  UNIT-AWARE DIMENSION HELPERS (Volume & Area)
+// ═══════════════════════════════════════════════════════
+var dimUnits = { V_LAKE: 'm3', AREA: 'm2' };
+
+// Conversion factors: display unit → base SI (m³ or m²)
+var dimToBase = {
+  V_LAKE: { m3: 1, km3: 1e9 },
+  AREA:   { m2: 1, km2: 1e6 }
+};
+
+// Slider ranges in DISPLAY units for each unit mode
+var dimSliderCfg = {
+  V_LAKE: {
+    m3:  { min: 1e5,   max: 5e11,  step: 1e5   },
+    km3: { min: 0.0001, max: 500,  step: 0.0001 }
+  },
+  AREA: {
+    m2:  { min: 1e4,   max: 2e9,  step: 1e4   },
+    km2: { min: 0.01,  max: 2000, step: 0.01   }
+  }
+};
+
+var unitLabels = {
+  V_LAKE: { m3: '(m³)', km3: '(km³)' },
+  AREA:   { m2: '(m²)', km2: '(km²)' }
+};
+
+function applyDimSliderCfg(id) {
+  var unit = dimUnits[id];
+  var cfg  = dimSliderCfg[id][unit];
+  var r    = document.getElementById('r_' + id);
+  if (!r) return;
+  r.min  = cfg.min;
+  r.max  = cfg.max;
+  r.step = cfg.step;
+}
+
+// Called when the slider moves (value is in display units)
+function syncInputDim(id, dispVal) {
+  var num  = parseFloat(dispVal);
+  var unit = dimUnits[id];
+  var base = num * dimToBase[id][unit];
+  document.getElementById(id).value       = base;
+  document.getElementById(id + '_disp').value = num;
+  // range-val badge: always show SI scientific
+  var dv = document.getElementById('rv_' + id);
+  if (dv) dv.textContent = fmtSI_badge(base);
+  runModel();
+}
+
+// Called when the number input changes (value in display units)
+function syncRangeDim(id, dispVal) {
+  var num  = parseFloat(dispVal);
+  var unit = dimUnits[id];
+  var base = num * dimToBase[id][unit];
+  document.getElementById(id).value = base;
+  var r    = document.getElementById('r_' + id);
+  if (r) r.value = num;
+  var dv   = document.getElementById('rv_' + id);
+  if (dv) dv.textContent = fmtSI_badge(base);
+  runModel();
+}
+
+function fmtSI_badge(v) {
+  if (v === null || isNaN(v)) return '—';
+  var abs = Math.abs(v);
+  if (abs >= 1e9) return (v/1e9).toFixed(3) + '×10⁹';
+  if (abs >= 1e6) return (v/1e6).toFixed(2) + '×10⁶';
+  if (abs >= 1e3) return (v/1e3).toFixed(2) + '×10³';
+  return v.toFixed(2);
+}
+
+function setVolumeUnit(unit) {
+  dimUnits['V_LAKE'] = unit;
+  // Update pill states
+  document.getElementById('up_V_LAKE_m3').className  = 'unit-pill' + (unit === 'm3' ? ' active' : '');
+  document.getElementById('up_V_LAKE_km3').className = 'unit-pill' + (unit === 'km3' ? ' active' : '');
+  // Update label
+  document.getElementById('lbl_V_LAKE').textContent = unitLabels['V_LAKE'][unit];
+  // Convert current base value to new display unit and update slider cfg
+  var base = parseFloat(document.getElementById('V_LAKE').value) || 0;
+  var newDisp = base / dimToBase['V_LAKE'][unit];
+  applyDimSliderCfg('V_LAKE');
+  document.getElementById('V_LAKE_disp').value = parseFloat(newDisp.toPrecision(5));
+  document.getElementById('r_V_LAKE').value    = parseFloat(newDisp.toPrecision(5));
+  var dv = document.getElementById('rv_V_LAKE');
+  if (dv) dv.textContent = fmtSI_badge(base);
+}
+
+function setAreaUnit(unit) {
+  dimUnits['AREA'] = unit;
+  document.getElementById('up_AREA_m2').className  = 'unit-pill' + (unit === 'm2' ? ' active' : '');
+  document.getElementById('up_AREA_km2').className = 'unit-pill' + (unit === 'km2' ? ' active' : '');
+  document.getElementById('lbl_AREA').textContent  = unitLabels['AREA'][unit];
+  var base    = parseFloat(document.getElementById('AREA').value) || 0;
+  var newDisp = base / dimToBase['AREA'][unit];
+  applyDimSliderCfg('AREA');
+  document.getElementById('AREA_disp').value = parseFloat(newDisp.toPrecision(5));
+  document.getElementById('r_AREA').value    = parseFloat(newDisp.toPrecision(5));
+  var dv = document.getElementById('rv_AREA');
+  if (dv) dv.textContent = fmtSI_badge(base);
+}
+
 function syncInput(id, val) {
   var num = parseFloat(val);
   document.getElementById(id).value = num;
@@ -1959,10 +2113,14 @@ function drawSensitivityChart(AREA, DV_DT, activeKeys, results, survey_mean) {
 //  INIT
 // ═══════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', function() {
-  ['V_LAKE','AREA','DV_DT_CM3','TOTAL_SHELL_RATIO','BULK_DENSITY'].forEach(function(id) {
+  // Volume and area use new unit-aware helpers; others use legacy syncRange
+  ['DV_DT_CM3','TOTAL_SHELL_RATIO','BULK_DENSITY'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) syncRange(id, el.value);
   });
+  // Init display inputs for dimension fields
+  syncRangeDim('V_LAKE', document.getElementById('V_LAKE_disp').value);
+  syncRangeDim('AREA',   document.getElementById('AREA_disp').value);
   runModel();
 });
 
