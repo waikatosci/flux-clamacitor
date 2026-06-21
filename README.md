@@ -10,7 +10,7 @@
 
 ## Overview
 
-This repository contains the Python analysis notebooks, input datasets, and an interactive HTML tool used to derive CaCO₃ biomineralization fluxes and population-scale density estimates for *Corbicula fluminea* (Asian clam) in Lake Karāpiro, Waikato River, New Zealand. The study links a novel *C. fluminea* invasion to large-scale calcium depletion and downstream arsenic treatment failures at a major drinking water supply.
+This repository contains the Python analysis notebooks, input datasets, and an interactive HTML tool used to derive CaCO₃ biomineralization fluxes and population-scale density estimates for *Corbicula fluminea* (Asian clam) in Lake Karāpiro, Waikato River, New Zealand. The study links a rapid *C. fluminea* invasion to large-scale calcium depletion and downstream arsenic treatment failures at a major drinking water supply.
 
 The **Flux Clamacitor** (`FluxClamacitor.html`) is a self-contained browser-based GUI allowing users to run the removal flux model interactively, adjust parameters, and compare model outputs against field survey densities — with no Python installation required.
 
