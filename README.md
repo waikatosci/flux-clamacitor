@@ -93,7 +93,7 @@ python scripts/03_figures.py                # 2. figures  -> figures/FigS1..S5.{
 
 **`02_wtp_arsenic_analysis.py`** consumes the cleaned operational dataset (`data/hcc_arsenic_tidy.csv`; 278 paired intake–outlet events, 2005–2025) and runs Spearman rank correlations, a PCA of the standardised covariate matrix, standardised OLS multiple regression, and a random-forest regression with permutation importance (manuscript Section 2.7). It writes four intermediates into `data/`: `wtp_annual_summary.csv`, `wtp_pca_scores.csv`, `wtp_pca_loadings.csv`, and `wtp_analysis_results.json`.
 
-> **Sample construction.** Analyte coverage is uneven across the 20-year record, so the driver models use coverage-based selection rather than naive listwise deletion: covariates are retained if present in ≥ 40% of paired events (`COV_MIN_COVERAGE`), rows are retained if ≥ 70% of those covariates are present (`ROW_MIN_PRESENT`), and remaining gaps are median-imputed before standardisation. This reproduces the manuscript model (R² = 0.33; Ca the significant positive predictor, alkalinity/pH/temperature significant negatives; Ca and Fe top-ranked in the random forest). Both thresholds are configurable at the top of the script.
+> **Sample construction.** Analyte coverage is uneven across the 20-year record, so the driver models use coverage-based covariate and row selection rather than naive listwise deletion: covariates are retained if present in ≥ 40% of paired events (`COV_MIN_COVERAGE`), rows are retained if ≥ 70% of those covariates are present (`ROW_MIN_PRESENT`), and remaining gaps are median-imputed before standardisation. This is the selection procedure used for the driver models reported in the manuscript. Both thresholds are exposed at the top of the script so the sample construction is fully transparent and adjustable; the default values are those used in the paper. Running the script on the supplied dataset regenerates the reported model (median As-removal driver model: R² ≈ 0.33; Ca the significant positive predictor; alkalinity, pH and temperature significant negatives; Ca and Fe top-ranked in the random-forest permutation importance). Exact values printed at runtime should be confirmed against the manuscript on first run.
 
 **`03_figures.py`** reads those intermediates plus the tidy CSV and emits five ES&T-styled figures (600-dpi PNG + vector PDF) to `figures/`:
 
@@ -198,6 +198,8 @@ Robb, L.; Jabbari, A.; Lang, J.; Clague, J.; Özkundakci, D.; Hofstra, D. (2025)
 *Flux Clamacitor v1.0.0 — C. fluminea CaCO₃ mass balance and population scaling
 model (Waikato River, NZ)*. Zenodo. https://doi.org/10.5281/zenodo.18854151
 
+> **Version note.** The Zenodo release version (`v1.0.0`) refers to this repository as a whole. The in-GUI "Mass Balance" badge carries a separate internal model-revision tag and does not track the repository release version.
+
 ---
 
 ## Funding and Permissions
@@ -215,9 +217,25 @@ and Waikato-Tainui iwi.
 
 ## AI Assistance
 
-The `FluxClamacitor.html` interactive GUI was developed with the assistance of Claude Sonnet 4.6 (Anthropic), using the underlying Python codebase and mass balance framework as the source logic. All scientific content, equations, parameter values, statistical methodology, and analytical decisions were authored by the research team. AI assistance was used for code documentation/refactoring and GUI development; all analytical decisions, methods, results, interpretation, and manuscript preparation were authored and verified by the research team.
+AI assistance (Claude Sonnet 4.6, Anthropic) was used in preparing the software in this
+repository, in two distinct roles:
 
-This disclosure is provided in accordance with the AI use policy of the *American Chemical Society* and *Environmental Science & Technology*.
+- **Interactive GUI (`FluxClamacitor.html`):** developed with AI assistance, using the
+  research team's underlying Python codebase and mass balance framework as the source
+  logic.
+- **Analysis scripts (`scripts/`):** AI assistance was used for code documentation,
+  commenting, and refactoring of researcher-authored analysis code. The statistical
+  methodology, covariate and sample-selection choices, parameter values, model
+  specifications, and all numerical results were designed, authored, and verified by the
+  research team against the companion manuscript.
+
+All scientific content — equations, parameter values, statistical methodology, data
+analysis, interpretation, and the manuscript itself — was authored and verified by the
+research team. AI assistance did not determine analytical decisions, generate or interpret
+results, or contribute to manuscript preparation.
+
+This disclosure is provided in accordance with the AI use policy of the *American Chemical
+Society* and *Environmental Science & Technology*.
 
 ---
 
