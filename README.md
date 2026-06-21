@@ -198,7 +198,7 @@ Robb, L.; Jabbari, A.; Lang, J.; Clague, J.; Özkundakci, D.; Hofstra, D. (2025)
 *Flux Clamacitor v1.0.0 — C. fluminea CaCO₃ mass balance and population scaling
 model (Waikato River, NZ)*. Zenodo. https://doi.org/10.5281/zenodo.18854151
 
-> **Version note.** The Zenodo release version (`v1.0.0`) refers to this repository as a whole. The in-GUI "Mass Balance" badge carries a separate internal model-revision tag and does not track the repository release version.
+> **Version note.** The Zenodo release version (`v1.0.0`) refers to this repository as a whole, and the in-GUI badge reports the same version.
 
 ---
 
