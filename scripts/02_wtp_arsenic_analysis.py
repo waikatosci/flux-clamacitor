@@ -38,7 +38,7 @@ import statsmodels.api as sm
 DATA = "data"
 RANDOM_STATE = 42
 
-# --- Multivariate sample-construction (recovered from the original pipeline) -
+# --- Multivariate sample-construction ---
 # The manuscript driver models (Fig. 2; R2 = 0.33, OLS reported n = 95) were
 # built with a coverage-based covariate/row selection followed by median
 # imputation and standardisation, NOT naive listwise deletion over all analytes:
