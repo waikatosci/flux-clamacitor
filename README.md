@@ -4,7 +4,7 @@
 
 **Companion code and interactive tool for:**
 
-> Hartland, A., Melchior, M., Hamilton, D., Lehto, N.J., Mullarney, J., Sandwell, D., Robb, L., Jabbari, A., Lang, J., Clague, J., Özkundakci, D., and Hofstra, D. (*in review*). **Massive riverine calcium drawdown by invasive bivalves undermines arsenic removal in water supply.** *Environmental Science & Technology.*
+> Hartland, A., Melchior, M., Hamilton, D., Lehto, N.J., Mullarney, J., Sandwell, D., Robb, L., Jabbari, A., Lang, J., Clague, J., Özkundakci, D., and Hofstra, D. (*in review*). **Carbonate-system perturbation by invasive bivalves threatens drinking-water security in calcium-limited catchments.** *Environmental Science & Technology.*
 
 ---
 
@@ -188,8 +188,8 @@ If you use this code or the Flux Clamacitor tool, please cite:
 
 Hartland, A., Melchior, M., Hamilton, D., Lehto, N.J., Mullarney, J., Sandwell, D.,
 Robb, L., Jabbari, A., Lang, J., Clague, J., Özkundakci, D., and Hofstra, D. (in review).
-Massive calcium drawdown by invasive bivalves undermines arsenic removal in water supply
-from a major river system. *Environmental Science & Technology*.
+Carbonate-system perturbation by invasive bivalves threatens drinking-water security in 
+calcium-limited catchments. *Environmental Science & Technology*.
 
 **Code:**
 
@@ -215,7 +215,7 @@ and Waikato-Tainui iwi.
 
 ## AI Assistance
 
-The `FluxClamacitor.html` interactive GUI was developed with the assistance of Claude Sonnet 4.6 (Anthropic), using the underlying Python codebase and mass balance framework as the source logic. AI assistance was also used to adapt the WTP arsenic analysis scripts (`scripts/`) to the repository's structure and path conventions and to document the pipeline. All scientific content, equations, parameter values, statistical methodology, and analytical decisions were authored by the research team. AI assistance did not contribute to data analysis, interpretation, or manuscript preparation.
+The `FluxClamacitor.html` interactive GUI was developed with the assistance of Claude Sonnet 4.6 (Anthropic), using the underlying Python codebase and mass balance framework as the source logic. All scientific content, equations, parameter values, statistical methodology, and analytical decisions were authored by the research team. AI assistance did not contribute to data analysis, interpretation, or manuscript preparation.
 
 This disclosure is provided in accordance with the AI use policy of the *American Chemical Society* and *Environmental Science & Technology*.
 
