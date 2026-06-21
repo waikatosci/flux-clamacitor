@@ -215,7 +215,7 @@ and Waikato-Tainui iwi.
 
 ## AI Assistance
 
-The `FluxClamacitor.html` interactive GUI was developed with the assistance of Claude Sonnet 4.6 (Anthropic), using the underlying Python codebase and mass balance framework as the source logic. All scientific content, equations, parameter values, statistical methodology, and analytical decisions were authored by the research team. AI assistance did not contribute to data analysis, interpretation, or manuscript preparation.
+The `FluxClamacitor.html` interactive GUI was developed with the assistance of Claude Sonnet 4.6 (Anthropic), using the underlying Python codebase and mass balance framework as the source logic. All scientific content, equations, parameter values, statistical methodology, and analytical decisions were authored by the research team. AI assistance was used for code documentation/refactoring and GUI development; all analytical decisions, methods, results, interpretation, and manuscript preparation were authored and verified by the research team.
 
 This disclosure is provided in accordance with the AI use policy of the *American Chemical Society* and *Environmental Science & Technology*.
 
