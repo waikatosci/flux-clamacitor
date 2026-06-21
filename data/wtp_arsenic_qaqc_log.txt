@@ -1,0 +1,46 @@
+======================================================================
+HCC WAIORA WTP ARSENIC DATASET — QA/QC & CLEANING LOG
+======================================================================
+Source file : Arsenic_Study_-_Adam.xlsx
+Sheet       : 'WRC Format'
+
+Raw shape (incl. note rows): (370, 62)
+Dropped 63 trailing free-text/note rows (no DateTime).
+Measurement rows retained: 307
+Date span: 2005-12-12 -> 2025-12-29
+
+Duplicate check: 'Tot As' vs 'AsTot_Inflow'  r=1.0000 (n=294) -> dropping 'Tot As'
+Duplicate check: 'MnTot.1' vs 'MnTot'  r=0.9999 (n=129) -> dropping 'MnTot.1'
+Duplicate check: 'MnDiss.1' vs 'MnDiss'  r=1.0000 (n=98) -> dropping 'MnDiss.1'
+
+LEFT-CENSORED MEASURANDS (substituted at LOD/sqrt2):
+  variable       n_cens n_total  cens_%  LOD(s)
+  As_tot_out         65     290     22%  [np.float64(0.001), np.float64(0.0011), np.float64(0.021)]
+  sulphide           42      45     93%  [np.float64(0.002), np.float64(0.05)]
+  NH4_N              22      59     37%  [np.float64(0.01)]
+  Mn_diss            16     117     14%  [np.float64(0.0005)]
+  nitrite_N           7      77      9%  [np.float64(0.002), np.float64(0.02)]
+  DOC                 6     110      5%  [np.float64(0.5)]
+  TOC                 2     132      2%  [np.float64(0.5)]
+  Mo_tot              2      54      4%  [np.float64(0.00021)]
+  As_diss_out         1      74      1%  [np.float64(0.001)]
+  Fe_diss             1     116      1%  [np.float64(0.02)]
+  DRP                 1      11      9%  [np.float64(0.004)]
+
+Paired inflow+outflow events: 278
+  As removal %  : median 91.8%  min -21.4%  max 97.2%
+  Outlet <= MAV (0.010 mg/L): 280/290 events
+
+PHYSICAL-RANGE / OUTLIER QA (flagged, not removed):
+  pH: 1 value(s) outside [5,9] -> [11.0]
+  alkalinity: 1 value(s) outside [0,120] -> [151.0]
+  Mn_tot: 2 value(s) outside [0,2] -> [2.63, 2.8]
+
+MULTIVARIATE QA EXCLUSION (implausible soft-water chemistry; flagged, retained):
+  Rows flagged: 1
+    2010-08-09  -> pH=11;Ca_tot=50;alkalinity=151;
+
+Duplicate timestamps: 0 row(s)
+
+Tidy CSV written: outputs/hcc_arsenic_tidy.csv  (307 rows x 63 cols)
+Data dictionary written: outputs/data_dictionary.csv
