@@ -37,17 +37,35 @@ OUT = ROOT / "data"          # repo convention: data + intermediates live in dat
 FIG = ROOT / "figures"
 FIG.mkdir(exist_ok=True)
 
+# --------------------------------------------------------------- page widths
+# ACS sets figures to one column or two. Drawing at the final width means the
+# point sizes below are the point sizes that print, and the PDF page comes out
+# at a width production does not have to rescale. Intermediate widths are
+# permitted where a square-ish panel would be cramped at one column (W_INTER).
+W1, W_INTER, W2 = 3.33, 4.60, 7.00   # inches
+
 # ---------------------------------------------------------------- ES&T style
 mpl.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "DejaVu Sans"],
     "font.size": 8, "axes.labelsize": 8, "axes.titlesize": 8.5,
-    "xtick.labelsize": 7, "ytick.labelsize": 7, "legend.fontsize": 7,
+    "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "legend.fontsize": 7.5,
     "axes.linewidth": 0.8, "xtick.major.width": 0.8, "ytick.major.width": 0.8,
     "xtick.direction": "out", "ytick.direction": "out",
     "axes.spines.top": False, "axes.spines.right": False,
-    "figure.dpi": 120, "savefig.dpi": 600, "savefig.bbox": "tight",
-    "savefig.pad_inches": 0.02, "pdf.fonttype": 42, "ps.fonttype": 42,
+    "figure.dpi": 120, "savefig.dpi": 600,
+    # savefig.bbox="tight" crops to the ink and so overrides figsize: a figure
+    # declared at 7.00 in was landing on an arbitrary page (the previously
+    # submitted Fig_2_attribution.pdf came out at 15.5 cm). Leave it unset and
+    # let constrained_layout fit the content inside the declared canvas, so the
+    # PDF page is exactly the width asked for.
+    "savefig.bbox": None, "savefig.transparent": False,
+    # TrueType, not matplotlib's default Type 3, which several publishers
+    # reject and which cannot be text-searched or re-flowed.
+    "pdf.fonttype": 42, "ps.fonttype": 42, "svg.fonttype": "none",
+    "pdf.compression": 6,
+    # every figure gets constrained_layout unless it opts out
+    "figure.constrained_layout.use": True,
 })
 # colour-blind-safe (Okabe-Ito)
 OI = {"blue": "#0072B2", "orange": "#E69F00", "green": "#009E73",
@@ -55,10 +73,15 @@ OI = {"blue": "#0072B2", "orange": "#E69F00", "green": "#009E73",
       "yellow": "#F0E442", "grey": "#999999"}
 
 def save(fig, name):
-    for ext in ("png", "pdf"):
-        fig.savefig(FIG / f"{name}.{ext}")
+    """Write a true-vector PDF plus a 600-dpi PNG companion."""
+    meta = {"Title": f"Hartland et al. - {name}",
+            "Creator": "flux-clamacitor 03_figures.py"}
+    fig.savefig(FIG / f"{name}.pdf", format="pdf", metadata=meta)
+    fig.savefig(FIG / f"{name}.png", format="png", dpi=600)
+    w, h = fig.get_size_inches()
     plt.close(fig)
-    print(f"  saved figures/{name}.png + .pdf")
+    print(f"  saved figures/{name}.pdf + .png "
+          f"({w:.2f} x {h:.2f} in = {w*2.54:.1f} x {h*2.54:.1f} cm)")
 
 df = pd.read_csv(OUT / "hcc_arsenic_tidy.csv", parse_dates=["datetime"])
 res = json.load(open(OUT / "wtp_analysis_results.json"))
@@ -72,7 +95,7 @@ dp["era"] = np.where(dp["coagulant"].astype(str).str.contains("ACH", na=False),
 print("Generating figures...")
 
 # ================================================================ FIG S1
-fig, axes = plt.subplots(2, 1, figsize=(7.0, 4.8), sharex=True,
+fig, axes = plt.subplots(2, 1, figsize=(W2, 4.8), sharex=True,
                          gridspec_kw={"height_ratios": [1.4, 1]})
 ax = axes[0]
 ax.scatter(dp["datetime"], dp["As_tot_in"]*1000, s=10, c=OI["blue"],
@@ -84,7 +107,7 @@ ax.scatter(on["datetime"], on["As_tot_out"]*1000, s=10, c=OI["red"],
 ax.scatter(oc["datetime"], oc["As_tot_out"]*1000, s=10, facecolors="none",
            edgecolors=OI["red"], linewidths=0.6, alpha=0.6, label="Outlet < LOD")
 ax.axhline(10, color="k", ls="--", lw=0.8)
-ax.text(df["datetime"].min(), 10.4, "NZ MAV 0.010 mg L$^{-1}$", fontsize=6.5, va="bottom")
+ax.text(df["datetime"].min(), 10.4, "NZ MAV 0.010 mg L$^{-1}$", fontsize=7.5, va="bottom")
 ax.set_ylabel("Total arsenic (µg L$^{-1}$)")
 ax.set_yscale("log")
 ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False,
@@ -108,7 +131,6 @@ ax2.set_ylim(60, 100)
 ax2.legend(loc="lower left", frameon=False)
 ax2.text(0.01, 0.97, "b", transform=ax2.transAxes, fontweight="bold", va="top")
 fig.align_ylabels(axes)
-fig.subplots_adjust(top=0.90)
 save(fig, "FigS1_performance_timeseries")
 
 # ================================================================ FIG S2
@@ -125,7 +147,7 @@ for i, m in enumerate(metrics):
         sub = dp[[m, d]].dropna()
         if len(sub) >= 10:
             C[i, j], P[i, j] = stats.spearmanr(sub[m], sub[d])
-fig, ax = plt.subplots(figsize=(7.0, 2.6))
+fig, ax = plt.subplots(figsize=(W2, 2.6))
 im = ax.imshow(C, cmap="RdBu_r", vmin=-1, vmax=1, aspect="auto")
 ax.set_xticks(range(len(drivers)))
 ax.set_xticklabels(drivers, rotation=45, ha="right")
@@ -147,7 +169,7 @@ save(fig, "FigS2_correlation_heatmap")
 scores = pd.read_csv(OUT / "wtp_pca_scores.csv")
 load = pd.read_csv(OUT / "wtp_pca_loadings.csv", index_col=0)
 ev = res["pca"]["explained_var"]
-fig, ax = plt.subplots(figsize=(4.6, 4.2))
+fig, ax = plt.subplots(figsize=(W_INTER, 4.2))
 sc = ax.scatter(scores["PC1"], scores["PC2"], c=scores["As_removal_pct"],
                 cmap="viridis", s=18, alpha=0.8, edgecolors="none")
 # scale arrows to span of scores for readability
@@ -178,7 +200,7 @@ LBL = {"As_tot_in": "As (intake)", "Ca_tot": "Ca", "Fe_tot": "Fe",
 def pretty(v):
     return LBL.get(v, v.replace("_", " "))
 
-fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.0))
+fig, axes = plt.subplots(1, 2, figsize=(W2, 3.0))
 # OLS standardised coefs (excl const), with significance
 coefs = {k: v for k, v in res["ols"]["coefs"].items() if k != "const"}
 pvs = res["ols"]["pvalues"]
@@ -208,7 +230,7 @@ axes[1].text(0.0, 1.02, "B", transform=axes[1].transAxes, fontsize=7.5,
 save(fig, "FigS4_driver_attribution")
 
 # ================================================================ FIG S5 mechanistic
-fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.2))
+fig, axes = plt.subplots(1, 2, figsize=(W2, 3.2))
 era_col = {"Alum": OI["blue"], "Alum+ACH": OI["orange"]}
 for ax, xvar, xlab in [(axes[0], "Ca_tot", "Total calcium (mg L$^{-1}$)"),
                        (axes[1], "Fe_tot", "Total iron (mg L$^{-1}$)")]:
@@ -225,11 +247,11 @@ for ax, xvar, xlab in [(axes[0], "Ca_tot", "Total calcium (mg L$^{-1}$)"),
         xs = np.linspace(xlo, xhi, 50)
         ax.plot(xs, b[1] + b[0]*xs, color="k", lw=1.1)
         ax.text(0.04, 0.06, f"ρ={rho:+.2f}, p<0.001" if p < 0.001 else
-                f"ρ={rho:+.2f}, p={p:.3f}", transform=ax.transAxes, fontsize=6.5)
+                f"ρ={rho:+.2f}, p={p:.3f}", transform=ax.transAxes, fontsize=7)
     ax.set_xlabel(xlab); ax.set_ylabel("As removal (%)")
     ax.set_ylim(60, 100)
 axes[0].legend(frameon=False, loc="lower right", title="Coagulant era",
-               title_fontsize=6.5)
+               title_fontsize=7)
 axes[0].text(0.01, 0.99, "a", transform=axes[0].transAxes, fontweight="bold", va="top")
 axes[1].text(0.01, 0.99, "b", transform=axes[1].transAxes, fontweight="bold", va="top")
 save(fig, "FigS5_Ca_Fe_mechanism")
