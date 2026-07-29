@@ -4,7 +4,7 @@
 
 **Companion code and interactive tool for:**
 
-> Hartland, A., Melchior, M., Hamilton, D., Lehto, N.J., Mullarney, J., Sandwell, D., Robb, L., Jabbari, A., Lang, J., Clague, J., Özkundakci, D., and Hofstra, D. (*in review*). **Carbonate-system perturbation by invasive bivalves threatens drinking-water security in calcium-limited catchments.** *Environmental Science & Technology.*
+> Hartland, A., Melchior, M., Hamilton, D., Lehto, N.J., Mullarney, J., Sandwell, D., Robb, L., Jabbari, A., Lang, J., Clague, J., Özkundakci, D., and Hofstra, D. (2026). **Carbonate-system perturbation by invasive bivalves threatens drinking-water security in calcium-limited catchments.** *Environmental Science & Technology.*
 
 ---
 
