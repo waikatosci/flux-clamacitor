@@ -1,0 +1,64 @@
+{
+  "title": "Flux Clamacitor 2.0: calcium carbonate removal mass balances and population estimates for invasive bivalves",
+  "upload_type": "software",
+  "version": "2.0.0",
+  "description": "<p>Code and data accompanying Hartland et al. (2026), Environmental Science &amp; Technology 60 (38), 27204−27214, and its Addition and Correction. Version 2.0 moves the mass-balance and population calculations into a Python package with two settings: <em>legacy</em>, which reproduces the published values, and <em>correction</em>, which gives the corrected values (Ca as the median of the filtered and unfiltered ICP-MS replicates, and a shell bulk density of 0.632 g cm<sup>−3</sup> from corrected specimen weighings). Includes the replicate ICP-MS data, the corrected specimen measurements, scripts to redraw Figures 3 and 4 and Table 1, input templates for other lakes and a test suite.</p>",
+  "creators": [
+    {
+      "name": "Hartland, Adam",
+      "orcid": "0000-0002-1864-5144"
+    },
+    {
+      "name": "Melchior, Michele"
+    },
+    {
+      "name": "Hamilton, David P."
+    },
+    {
+      "name": "Lehto, Niklas J."
+    },
+    {
+      "name": "Mullarney, Julia C."
+    },
+    {
+      "name": "Sandwell, Dean"
+    },
+    {
+      "name": "Robb, Linda"
+    },
+    {
+      "name": "Jabbari, Aidin"
+    },
+    {
+      "name": "Lang, Jeff"
+    },
+    {
+      "name": "Clague, Juliet"
+    },
+    {
+      "name": "Özkundakci, Deniz"
+    },
+    {
+      "name": "Hofstra, Deborah"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "Corbicula fluminea",
+    "gold clam",
+    "calcium",
+    "biomineralisation",
+    "mass balance",
+    "Lake Karāpiro",
+    "Waikato River",
+    "invasive species"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.1021/acs.est.6c03421",
+      "relation": "isSupplementTo",
+      "scheme": "doi",
+      "resource_type": "publication-article"
+    }
+  ]
+}

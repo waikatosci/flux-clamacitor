@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clamacitor"
+version = "2.0.0.dev0"
+description = "CaCO3 removal mass balances and population inversion for invasive bivalves"
+requires-python = ">=3.9"
+dependencies = ["numpy", "pandas", "openpyxl", "pyyaml"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+clamacitor = "clamacitor.cli:main"
+
+[tool.setuptools]
+packages = ["clamacitor"]

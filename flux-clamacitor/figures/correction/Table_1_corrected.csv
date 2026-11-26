@@ -1,0 +1,4 @@
+method,basis,mean N (billions),mean D (individual m-2),median N (billions),median D (individual m-2),n dates
+vertical depletion,Ca,2.95 ± 2.52,398 ± 340,1.33,179,13
+vertical depletion,Alk,5.41 ± 4.61,730 ± 622,5.09,688,11
+vertical depletion,Ca + Alk,4.07 ± 3.68,550 ± 496,4.01,542,24

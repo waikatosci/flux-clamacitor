@@ -1,0 +1,54 @@
+variable,units,description,source_column
+datetime,,Sampling date/time,DateTime
+plant,,Treatment plant code,TreatmentPlant
+As_tot_in,mg/L,"Total As, raw river intake",AsTot_Inflow
+As_diss_in,mg/L,"Dissolved As, raw intake",AsDiss_Inflow
+As_tot_out,mg/L,"Total As, treated outlet (City Main Trunk)",AsTot_Outflow
+As_diss_out,mg/L,"Dissolved As, treated outlet",AsDiss_Outflow
+pH,,"pH, raw intake",pH
+hardness,mg/L CaCO3,Total hardness,Hardness
+cond,mS/m,Electrical conductivity,electrical conductivity (mS/m)
+TDS,mg/L,Total dissolved solids,TDS
+turbidity,NTU,Turbidity,Turb
+DOC,mg/L,Dissolved organic carbon,DOC
+TOC,mg/L,Total organic carbon,TOC
+algae,cells/mL,Algal cell count,Algal count cells/mL
+Ca_tot,mg/L,Total calcium,Ca - Total
+Ca_diss,mg/L,Dissolved calcium,Ca - dissolved
+Mg_tot,mg/L,Total magnesium,MgTot
+Mg_diss,mg/L,Dissolved magnesium,MgDiss
+Mn_tot,mg/L,Total manganese,MnTot
+Mn_diss,mg/L,Dissolved manganese,MnDiss
+K_tot,mg/L,Total potassium,K Tot
+K_diss,mg/L,Dissolved potassium,Kdiss
+Na_tot,mg/L,Total sodium,Na Tot
+Na_diss,mg/L,Dissolved sodium,Na Diss
+F,mg/L,Fluoride,F
+Cl,mg/L,Chloride,Chloride
+SO4,mg/L,Sulphate,Sulphate
+sulphide,mg/L,Sulphide,Sulphide
+alkalinity,mg/L CaCO3,Total alkalinity,Total Alkalinity
+Al_tot,mg/L,Total aluminium,Tot Al
+Sb_tot,mg/L,Total antimony,Tot Antimony
+B,mg/L,Boron,Boron
+Fe_tot,mg/L,Total iron,FeTot
+Fe_diss,mg/L,Dissolved iron,FeDiss
+Li_tot,mg/L,Total lithium,Li Tot
+Mo_tot,mg/L,Total molybdenum,Total Molybdenum
+nitrate_N,mg/L,Nitrate-N,Nitrate-N
+nitrite_N,mg/L,Nitrite-N,Nitrite-N
+NH4_N,mg/L,Total ammoniacal-N,Total Ammoniacial-N
+DRP,mg/L,Dissolved reactive P,Dissolved Reactive Phosphorous
+TP,mg/L,Total phosphorus,Total Phosphorus
+coagulant,,Coagulant type,Coagulant type
+temperature,deg C,Water temperature,Temperature
+year,,Calendar year,
+month,,Calendar month,
+season,,Southern-Hemisphere season,
+As_removed_abs,mg/L,Total As removed (inflow-outflow),
+As_removal_pct,%,Percent total As removal,
+As_LRV,log10,Log-removal value log10(in/out),
+meets_MAV,bool,Outlet <= NZ MAV 0.010 mg/L,
+qa_exclude_multivar,bool,"Row excluded from multivariate models (implausible chemistry); flagged, retained",
+qa_exclude_reason,,Free-text reason for multivariate QA exclusion,
+*_cens,bool,[meta] Any column suffixed _cens: left-censored flag (reported < LOD; value substituted at LOD/sqrt2),

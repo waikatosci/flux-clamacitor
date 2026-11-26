@@ -1,0 +1,27 @@
+file,column,units,description
+campaign_template.csv,date,YYYY-MM-DD,Sampling date
+campaign_template.csv,site,code,"up = inflow end of the reach; down = outflow end; top/bot = surface and near-bed samples at the dam face (vertical balance)"
+campaign_template.csv,Ca_mgL,mg/L,"Dissolved Ca, one value per site and date. Collapse replicates first; the median of all filtered and unfiltered replicates is recommended"
+campaign_template.csv,Alk_mgL,mg/L as CaCO3,"Total alkalinity (optional). Fixed pH 4.5 end point, matching the published values"
+flows_template.csv,date,YYYY-MM-DD,Daily mean
+flows_template.csv,Q_out_m3s,m3/s,Outflow from the lake (dam release)
+flows_template.csv,Q_in_m3s,m3/s,"Inflow. Where not gauged, derive as outflow + surface area x dh/dt (clamacitor.io.derive_inflow)"
+flows_template.csv,level_m,m,Lake level (optional; used only to derive inflow)
+configs/*.yaml,lake.volume_m3,m3,Lake volume
+configs/*.yaml,lake.benthic_area_m2,m2,Lakebed area used to convert population to density
+configs/*.yaml,lake.surface_area_m2,m2,Surface area used to derive inflow from level change
+configs/*.yaml,method.bulk_density_t_m3,g/cm3,Whole-animal dry mass per ellipsoid volume (total mass / total volume)
+configs/*.yaml,method.total_shell_ratio,g/g,Total dry mass per g shell CaCO3
+configs/*.yaml,method.dvdt_cm3_d,cm3/ind/d,Biovolume growth per individual
+icpms_replicates_2024-10_2025-07.csv,sample_id,,Sample label as analysed
+icpms_replicates_2024-10_2025-07.csv,site_code,,"S1 Aniwaniwa (ECP-S1), S3 Golf Course (ECP-S3), S2T/S2M/S2B Karapiro dam (ECP-S2) at 2, 13 and 25 m, S4 Narrows"
+icpms_replicates_2024-10_2025-07.csv,kind,,F-CAT (filtered) or U-MET (unfiltered)
+icpms_replicates_2024-10_2025-07.csv,date,YYYY-MM-DD,Sampling date
+icpms_replicates_2024-10_2025-07.csv,rep,,Replicate number
+icpms_replicates_2024-10_2025-07.csv,Ca_isotope,,Ca isotope used for quantification (44Ca preferred)
+icpms_replicates_2024-10_2025-07.csv,Ca_ugL / Na_ugL / Mg_ugL / K_ugL,ug/L,ICP-MS concentration
+icpms_replicates_2024-10_2025-07.csv,*_rsd,%,Within-run relative standard deviation
+shell_mass_corrected_2026-11-26.xlsx,sheet 'corbicula shell mass',,Specimen measurements as originally entered
+shell_mass_corrected_2026-11-26.xlsx,sheet 'corbicula shell mass corrected',,"As above, corrected from the laboratory notes for small1, small3 and medium2; adds tray_wt_g, gross_total_g and gross_body_g (dry = gross − tray)"
+shell_mass_corrected_2026-11-26.xlsx,length_mm / height_mm / width_mm,mm,Shell dimensions; ellipsoid volume = π/6 × L × H × W
+shell_mass_corrected_2026-11-26.xlsx,dry_total_g / dry_body_g / dry_shell_g,g,Dry masses (shell = total − body)

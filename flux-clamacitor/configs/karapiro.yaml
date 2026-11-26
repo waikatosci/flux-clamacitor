@@ -1,0 +1,17 @@
+# Lake Karapiro, Waikato River. Paths are relative to the repository root.
+lake:
+  name: Karapiro
+  volume_m3: 85.0e6
+  benthic_area_m2: 7.409e6     # whole lakebed, used to scale population to density
+  surface_area_m2: 7.4e6       # used only when deriving inflow from level change
+
+preset: correction             # or: legacy
+method:                        # any Method field can be overridden here
+  bulk_density_t_m3: 0.632     # corrected weighings, all 29 specimens
+  bulk_density_range: [0.57, 0.70]
+  dvdt_cm3_d: 0.0055
+
+inputs:
+  published: data/Full_data_for_Corbicula_Calcs_Landscape_Updated_16_1_26.xlsx
+  icpms: data/correction/icpms_replicates_2024-10_2025-07.csv
+  specimens: data/correction/shell_mass_corrected_2026-11-26.xlsx
